@@ -1,0 +1,700 @@
+/* General Styles */
+body {
+    background-color: #000000;
+    color: #ffffff;
+    padding-top: 76px;
+}
+
+/* Utility: force true black background */
+.bg-black {
+    background-color: #000000 !important;
+}
+/*font edicion limitada*/
+.michroma-regular {
+    font-family: "Michroma", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    letter-spacing: 1px;
+}
+
+/* Navigation Styles */
+.navbar {
+    min-height: 80px;
+    padding: 1rem 0;
+    background-color: #000000 !important;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+@media (max-width: 991.98px) {
+    .navbar {
+        padding: 0.5rem 0;
+    }
+    
+    .navbar-collapse {
+        max-height: calc(100vh - 80px);
+        overflow-y: auto;
+    }
+}
+
+.navbar-logo {
+    height: 40px;
+    width: auto;
+    margin-right: 1rem;
+}
+
+.logo-container {
+    min-width: 100px;
+    border-color: #fff !important;
+}
+
+.dropdown-menu {
+    background-color: #000000 !important;
+    border: 1px solid #333;
+}
+
+.dropdown-item {
+    color: #ffffff !important;
+    padding: 0.5rem 1rem;
+}
+
+.dropdown-item:hover, .dropdown-item:focus {
+    background-color: #333 !important;
+    color: #ffffff !important;
+}
+
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        background-color: #000000;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-top: 0.5rem;
+    }
+
+    .dropdown-menu {
+        background-color: #111111 !important;
+        border: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .dropdown-item {
+        padding: 0.75rem 1.5rem;
+    }
+
+    .navbar-nav .nav-item {
+        padding: 0.5rem 0;
+    }
+
+    .navbar-nav .dropdown-menu {
+        box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.1);
+    }
+}
+
+/* Hero Carousel */
+#heroCarousel {
+    margin-top: -16px;
+}
+
+.carousel-item {
+    height: 50vh;
+}
+
+.carousel-item img {
+    object-fit: cover;
+    height: 100%;
+}
+
+/* Products Section */
+.products-section {
+    background-color: var(--dark-bg);
+    padding: 4rem 0;
+}
+
+.product-card, .product-card-zoom {
+    background: #1a1a1a;
+    border-radius: 8px;
+    overflow: hidden;
+    height: 100%;
+}
+
+.product-card {
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+}
+
+.product-image {
+    height: 300px;
+    object-fit: cover;
+    width: 100%;
+}
+
+/* Estilos para la página de productos */
+.products-header {
+    margin-top: 80px;
+    background-color: #000000;
+    color: #ffffff;
+}
+
+.product-card-zoom .product-image-container {
+    overflow: hidden;
+    position: relative;
+}
+
+.product-card-zoom .product-image {
+    transition: transform 0.5s ease;
+}
+
+.product-card-zoom:hover .product-image {
+    transform: scale(1.05);
+}
+
+/* Ajustes de texto para productos */
+.product-card-zoom h5 {
+    color: #ffffff;
+    font-size: 1rem;
+    margin-top: 1rem;
+}
+
+.product-card-zoom .text-muted {
+    color: #999 !important;
+    font-size: 0.9rem;
+}
+
+.product-card-zoom .fw-bold {
+    color: #ffffff;
+    font-size: 1.1rem;
+}
+
+/* Footer logo styles */
+.footer-logo {
+    text-align: center;
+}
+
+.footer-logo-img {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+}
+
+.footer-logo .michroma-regular {
+    font-size: 0.9rem;
+    color: #000000;
+    margin-top: 0.5rem;
+}
+
+/* Custom column width for 4 items per row */
+.col-lg-3 {
+    flex: 0 0 auto;
+    width: 25%;
+}
+
+@media (max-width: 991px) {
+    .col-lg-3 {
+        width: 50%;
+    }
+}
+
+@media (max-width: 767px) {
+    .col-lg-3 {
+        width: 100%;
+    }
+    
+    .product-image {
+        height: 200px;
+    }
+}
+
+/* Footer Styles */
+footer {
+    background-color: #ffffff !important;
+    color: #000000;
+}
+
+footer h5 {
+    color: #000000;
+    margin-bottom: 1.5rem;
+}
+
+.social-links a {
+    font-size: 1.5rem;
+    transition: color 0.3s ease;
+    color: #000000;
+}
+
+.social-links a:hover {
+    color: #666 !important;
+}
+
+.footer-links a {
+    color: #000000;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: #666;
+}
+
+.newsletter-form .form-control {
+    border-radius: 0;
+    color: #000000;
+}
+
+.newsletter-form .btn {
+    border-radius: 0;
+    background-color: #000000;
+    color: #ffffff;
+}
+
+.footer-links a {
+    text-decoration: none !important;
+    color: inherit;
+    transition: color 0.2s;
+}
+
+.footer-links a:hover {
+    color: #888 !important;
+}
+
+/*Brand desing style*/
+.about-section {
+            min-height: calc(100vh - 400px);
+        }
+        .content-text {
+            font-family: 'Crimson Text', serif;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        .store-info {
+            font-size: 1.1rem;
+        }
+        .social-link:hover {
+            opacity: 0.8;
+            transform: scale(1.1);
+            transition: all 0.3s ease;
+        }
+        .big-logo {
+            max-width: 400px;
+            width: 100%;
+            height: auto;
+        }
+
+
+/*Designer style*/
+.designers-list {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            border-radius: 10px;
+        }
+        .designers-list h3 {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+        .designers-grid .designer-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            margin-bottom: 2rem;
+        }
+        .designers-grid .designer-card:hover {
+            transform: translateY(-5px);
+        }
+        .designer-card img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+        .designer-card .designer-name {
+            padding: 1rem;
+            text-align: center;
+            font-family: 'Michroma', sans-serif;
+            font-size: 0.9rem;
+            color: white;
+        }
+        .alphabet-list {
+            list-style: none;
+            padding: 0;
+        }
+        .alphabet-list li {
+            margin-bottom: 0.5rem;
+        }
+        .alphabet-list a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-family: 'Michroma', sans-serif;
+            font-size: 0.9rem;
+        }
+        .alphabet-list a:hover {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        .pagination {
+            margin-top: 2rem;
+        }
+        .pagination .page-link {
+            background-color: transparent;
+            border-color: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            padding: 0.5rem 1rem;
+            margin: 0 0.25rem;
+        }
+        .pagination .page-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+        }
+        .pagination .page-item.active .page-link {
+            background-color: #ffffff;
+            border-color: #ffffff;
+            color: #000000;
+            font-weight: bold;
+        }
+
+
+/* Theme Toggle */
+.theme-toggle {
+    cursor: pointer;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .carousel-item {
+        height: 50vh;
+    }
+
+    .navbar-nav {
+        text-align: center;
+    }
+
+    .d-flex.align-items-center {
+        margin-top: 1rem;
+        justify-content: center;
+    }
+}
+
+
+/* Sidebar Styles */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 280px;
+    background-color: #1a1a1a;
+    border-right: 1px solid #333;
+    z-index: 1000;
+    transition: transform 0.3s ease-in-out;
+}
+
+.sidebar-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #333;
+    background-color: #000;
+}
+
+.sidebar-logo {
+    height: 35px;
+    width: auto;
+}
+
+.sidebar-nav {
+    padding: 1rem 0;
+}
+
+.sidebar-nav .nav-link {
+    color: #ffffff;
+    padding: 0.75rem 1.5rem;
+    margin: 0.25rem 0;
+    border-radius: 0;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.sidebar-nav .nav-link:hover,
+.sidebar-nav .nav-link.active {
+    background-color: #333;
+    color: #ffffff;
+    border-left: 3px solid #ffffff;
+    padding-left: 1.35rem;
+}
+
+.sidebar-nav .nav-link i {
+    width: 20px;
+    margin-right: 10px;
+    text-align: center;
+}
+
+.sidebar-footer {
+    position: absolute;
+    bottom: 2rem;
+    width: 100%;
+    padding: 0 1.5rem;
+}
+
+.admin-profile-btn {
+    background-color: #333;
+    border: 1px solid #666;
+    color: #ffffff;
+    padding: 0.75rem;
+    width: 100%;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.admin-profile-btn:hover {
+    background-color: #666;
+    border-color: #999;
+    color: #ffffff;
+}
+
+/* Main Content Area */
+.main-content {
+    margin-left: 280px;
+    background-color: #000000;
+    min-height: 100vh;
+}
+
+/* Header for main content */
+.admin-header {
+    background-color: #000000;
+    border-bottom: 1px solid #333;
+    padding: 1rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+}
+
+.admin-content {
+    padding: 2rem;
+}
+
+/* Dashboard Cards */
+.dashboard-card {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    transition: transform 0.3s ease;
+    color: #ffffff;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    border-color: #666;
+}
+
+.dashboard-card .card-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: #ffffff;
+}
+
+.dashboard-card .card-number {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.dashboard-card .card-label {
+    color: #999;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        z-index: 1050; /* Mayor z-index para estar sobre otros elementos */
+        box-shadow: none;
+    }
+    
+    .sidebar.show {
+        transform: translateX(0);
+        box-shadow: 5px 0 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+    }
+    
+    .admin-content {
+        padding: 1rem;
+    }
+    
+    /* Botón hamburguesa visible solo en móvil */
+    #sidebarToggle {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        color: white;
+        border-radius: 0.375rem;
+        transition: all 0.3s ease;
+    }
+    
+    #sidebarToggle:hover,
+    #sidebarToggle:focus {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: white;
+        color: white;
+        box-shadow: none;
+    }
+    
+    /* Overlay para cerrar el sidebar */
+    .sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1040;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .sidebar-overlay.show {
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+/* Desktop - Sidebar siempre visible */
+@media (min-width: 769px) {
+    .sidebar {
+        transform: translateX(0) !important;
+        z-index: 1000;
+    }
+    
+    .main-content {
+        margin-left: 280px;
+        width: calc(100% - 280px);
+    }
+    
+    /* Botón hamburguesa oculto en desktop */
+    #sidebarToggle {
+        display: none !important;
+    }
+}
+
+/* Quick Actions */
+.quick-actions .btn {
+    margin: 0.25rem;
+    border-radius: 6px;
+}
+
+/* Featured Products Section in Admin */
+.admin-products-section {
+    background-color: #000000;
+    margin-top: 2rem;
+}
+
+/* Products Table Styles */
+#productsTable {
+    background-color: #1a1a1a;
+    color: #ffffff;
+}
+
+#productsTable th {
+    background-color: #000000 !important;
+    color: #ffffff !important;
+    border-color: #333 !important;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+#productsTable td {
+    background-color: #1a1a1a !important;
+    border-color: #333 !important;
+    vertical-align: middle;
+}
+
+#productsTable .table-striped tbody tr:nth-of-type(odd) td {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+#productsTable .table-hover tbody tr:hover td {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Badge styles for stock levels */
+.stock-badge {
+    font-size: 0.85rem;
+    padding: 0.5rem 0.75rem;
+}
+
+/* Button group spacing */
+.btn-group .btn {
+    margin-right: 2px;
+}
+
+.btn-group .btn:last-child {
+    margin-right: 0;
+}
+
+/* Toast notifications positioning */
+.toast-container {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    z-index: 9999;
+}
+
+
+
+
+
+
+
+
+
+/* Estilos mínimos para la vista administrador/disenadores.html */
+.designer-box {
+    position: relative;
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 2.75rem 1rem 1rem; /* espacio arriba para los botones */
+    text-align: center;
+    color: #fff;
+    min-height: 110px;
+}
+.designer-box .top-actions {
+    position: absolute;
+    top: .5rem;
+    right: .5rem;
+    display: flex;
+    gap: .5rem;
+}
+
+.designer-box {
+background-color: #1a1a1a;
+border: 1px solid #333;
+border-radius: 8px;
+padding: 2.75rem 1rem 1rem; /* espacio por si pones algo arriba luego */
+color: #fff;
+}
+
+.designer-box.selected {
+  background-color: rgba(255,255,255,0.1);
+  outline: 1px solid #666;
+}

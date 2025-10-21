@@ -1,0 +1,9 @@
+.designer-profile { width: 100%; }
+.designer-info h1 { font-size: 3rem; }
+.big-designer-logo { max-width: 320px; }
+@media (max-width: 991px) {
+  .designer-profile { flex-direction: column; text-align: center; }
+  .designer-info, .designer-logo { width: 100%; }
+  .designer-info { order: 2; }
+  .designer-logo { order: 1; margin-bottom: 1.5rem; }
+}

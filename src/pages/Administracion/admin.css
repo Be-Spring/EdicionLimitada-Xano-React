@@ -1,0 +1,11 @@
+.admin-layout { display: flex; min-height: 80vh; }
+.admin-menu { width: 260px; border-right: 1px solid rgba(255,255,255,0.06); position: sticky; top: 0; align-self: flex-start; height: 100vh; overflow: auto; padding-bottom: 2rem; }
+.admin-content { flex: 1; padding: 2rem; }
+.admin-login { max-width: 420px; margin: 4rem auto; }
+.admin-logo img { filter: drop-shadow(0 2px 6px rgba(0,0,0,0.6)); }
+
+/* small screens: make menu collapsible under content */
+@media (max-width: 768px) {
+	.admin-menu { position: relative; height: auto; width: 100%; }
+	.admin-layout { flex-direction: column; }
+}

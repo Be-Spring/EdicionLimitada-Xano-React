@@ -23,42 +23,16 @@ npm.cmd run dev
 
 Vite te mostrará la URL local (por defecto `http://localhost:5173/`, si ese puerto está en uso puede cambiar a `5174` u otro).
 
-## Qué cambié / añadí
-- Envolví la app en `BrowserRouter` y configuré rutas (SPA):
-  - `src/main.jsx` — ahora importa `BrowserRouter`.
-  - `src/App.jsx` — ahora usa `Routes` / `Route` y mantiene el estado global mínimo y el modal.
-- Páginas creadas en `src/pages/`:
-  - `Home.jsx` (Hero + ProductsSection + FormularioContacto)
-  - `ProductsPage.jsx` (muestra `ProductGridFetch`)
-  - `DesignersPage.jsx` (placeholder para diseñadores)
-- Componentes añadidos/ajustados en `src/componentes/`:
-  - `ProductCard.jsx`, `ProductGridFetch.jsx`, `ProductModal.jsx` (modal controlado por React)
-  - `Header.jsx` actualizado para usar `Link`/`NavLink` de `react-router-dom`
-  - `Products/ProductsSection.jsx` y `Products/ProductModal.jsx` (modularizado)
-  - `FormularioContacto.jsx` ya incluido como componente reutilizable
-- Se estandarizaron exportaciones (se añadieron `export default` donde era práctico) para evitar errores de importación en tiempo de ejecución.
-- Apliqué correcciones temporales y luego las revertí; también añadí overrides seguros en CSS para evitar overlays por defecto que oculten la UI.
-
-## Cómo probar rápidamente
-1. Arranca el dev server (`npm run dev`).
-2. Abre `http://localhost:5173/` (o el puerto que indique Vite).
-3. Navega por las rutas (en el header):
-   - `/` → Home
-   - `/productos` → lista de productos (demo con items de ejemplo)
-   - `/disenadores` → página de diseñadores (placeholder)
-4. En la página de productos haz click en una tarjeta para abrir el modal.
-
-## Troubleshooting
-- Si la página aparece en blanco: abre DevTools (F12) y mira la consola para errores JS. Copia cualquier error y pégalo en la conversación.
-- Si ves problemas con `npm` en PowerShell: usa `npm.cmd` como se indica arriba.
-- Si el modal no abre: confirma que no haya overlays invisibles (en `src/App.css` hay overrides seguros para `.sidebar-overlay` y `.toast-container`).
 
 ## Siguientes pasos sugeridos
 - Implementar estado de carrito en contexto y mostrar contador en el Header.
 - Poblar `DesignersPage` con datos reales o crear fichas desde `src/componentes/Designers/`.
 - Añadir tests unitarios básicos para componentes críticos.
+- Implementar roles cliente/administrador
+- Cliente: Debe poder registrarse, añadir productos al carrito y realizar compras de manera simulada
+- Administrador: Debe poder iniciar sesion, agregar productos y administrar usuarios
 
-Si quieres, hago el commit por ti con estos cambios y preparo un branch listo para revisión. Actualmente voy a crear un commit "limpio" con los cambios aplicados.
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.

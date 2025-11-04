@@ -9,7 +9,7 @@ export function CartProvider({ children }) {
       // guard against empty string or whitespace which breaks JSON.parse
       if (!raw || !raw.trim()) return []
       return JSON.parse(raw)
-    } catch (e) {
+    } catch {
       return []
     }
   })
@@ -17,7 +17,9 @@ export function CartProvider({ children }) {
   useEffect(() => {
     try {
       localStorage.setItem('cart', JSON.stringify(items))
-    } catch (e) {}
+    } catch {
+      // ignore error saving to localStorage
+    }
   }, [items])
 
   const addToCart = (product, quantity = 1) => {

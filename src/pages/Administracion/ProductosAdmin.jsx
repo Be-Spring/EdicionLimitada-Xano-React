@@ -24,7 +24,11 @@ export default function ProductosAdmin() {
   })
 
   useEffect(() => {
-    try { localStorage.setItem('admin_products', JSON.stringify(products)) } catch {}
+    try { 
+      localStorage.setItem('admin_products', JSON.stringify(products)) 
+    } catch {
+      // ignore localStorage error
+    }
   }, [products])
 
   useEffect(() => {
@@ -42,14 +46,23 @@ export default function ProductosAdmin() {
       try {
         const designers = await listDesigners();
         if (designers && designers.length) setDesignersList(designers)
-      } catch (e) {}
+      } catch {
+        // ignore error loading designers
+      }
       try {
         const categorias = await listCategories();
         if (categorias && categorias.length) setCategoriasList(categorias)
-      } catch (e) {}
+      } catch {
+        // ignore error loading categories
+      }
     }
     fetchData();
   }, [])
+
+  const handleRemove = (id) => {
+    if (!confirm('¿Eliminar producto? Esta acción no se puede deshacer.')) return
+    setProducts(prev => prev.filter(p => p.id !== id))
+  }
 
   const handleSubmit = async (e) => {
   e.preventDefault();

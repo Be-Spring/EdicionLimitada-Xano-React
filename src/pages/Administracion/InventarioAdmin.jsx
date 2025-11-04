@@ -24,7 +24,11 @@ export default function InventarioAdmin() {
   const [imagePreview, setImagePreview] = useState(null)
 
   useEffect(() => {
-    try { localStorage.setItem('admin_products', JSON.stringify(products)) } catch {}
+    try { 
+      localStorage.setItem('admin_products', JSON.stringify(products)) 
+    } catch {
+      // ignore localStorage error
+    }
   }, [products])
 
   useEffect(() => {

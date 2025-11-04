@@ -11,7 +11,7 @@ export async function listCategories({ token } = {}) {
       nombre_categoria: cat.nombre_categoria || cat.name || cat.titulo || cat.title || '',
       raw: cat,
     }));
-  } catch (e) {
+  } catch {
     return [];
   }
 }
@@ -56,7 +56,7 @@ export async function authLogin({ email, password, remember = true }) {
     if (me) localStorage.setItem('auth_user', JSON.stringify(me));
     // devolver un objeto que incluya user cuando sea posible
     return { ...data, user: data.user ?? me };
-  } catch (err) {
+  } catch {
     // si falla authMe no interrumpimos el flujo
     return data;
   }
@@ -76,7 +76,7 @@ export async function authSignup({ name, email, password, remember = true }) {
     const me = await authMe();
     if (me) localStorage.setItem('auth_user', JSON.stringify(me));
     return { ...data, user: data.user ?? me };
-  } catch (err) {
+  } catch {
     return data;
   }
 }
@@ -116,16 +116,18 @@ export async function createProduct(token, payload) {
         headers,
         body: JSON.stringify({ producto_id: productId, disenador_id: disenadorId, fecha_asignacion: new Date().toISOString().slice(0,10) }),
       });
-      // ignore relation result, but attempt to enrich response with designer if possible
-      const rel = await relRes.json().catch(() => null);
+      // ignore relation result
+      await relRes.json().catch(() => null);
       // try to fetch designer info
       try {
         const dRes = await fetch(`${STORE_BASE}/disenador/${disenadorId}`, { headers });
         const designer = await dRes.json().catch(() => null);
         if (designer) created.disenador = designer;
-      } catch (e) {}
+      } catch {
+        // ignore error
+      }
     }
-  } catch (e) {
+  } catch {
     // non-fatal
   }
 
@@ -150,7 +152,7 @@ export async function listDesigners({ token } = {}) {
         telefono_disenador: d.telefono_disenador || d.phone || '',
         raw: d,
       }));
-    } catch (e) {
+    } catch {
       // try next
     }
   }
@@ -181,7 +183,11 @@ export async function uploadImages(token, files) {
 
       if (res.status === 400) {
         // opcional: log para saber si el campo no calza
-        try { console.warn('uploadImages 400 for field', field, await res.text()); } catch {}
+        try { 
+          console.warn('uploadImages 400 for field', field, await res.text()); 
+        } catch {
+          // ignore error reading response text
+        }
         continue;
       }
       if (!res.ok) continue;
@@ -209,16 +215,18 @@ export async function attachImagesToProduct(token, productId, imagesFullArray) {
   // Si alguien pasó objetos “mutilados”, intenta recuperar el RAW
   const images = imagesFullArray.map(x => x?.raw ? x.raw : x);
 
-  const { data } = await axios.patch(
+  const res = await fetch(
     `${STORE_BASE}/producto/${productId}`,
-    { images }, // ← el nombre del campo en tu tabla es 'images'
     {
+      method: 'PATCH',
       headers: {
         ...makeAuthHeader(token),
         "Content-Type": "application/json"
-      }
+      },
+      body: JSON.stringify({ images })
     }
   );
+  const data = await res.json();
   return data;
 }
 

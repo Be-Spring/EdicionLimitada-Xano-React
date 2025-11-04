@@ -41,7 +41,11 @@ export default function AddDiseñadorAdmin() {
     if (id) next = designers.map(d => d.id === payload.id ? payload : d)
     else next = [payload, ...designers]
     setDesigners(next)
-    try { localStorage.setItem('admin_designers', JSON.stringify(next)) } catch {}
+    try { 
+      localStorage.setItem('admin_designers', JSON.stringify(next)) 
+    } catch {
+      // ignore localStorage error
+    }
     navigate('/administrador/disenadores')
   }
 

@@ -9,7 +9,13 @@ function readDesigners() {
 export default function DiseñadorAdmin() {
   const [designers, setDesigners] = useState(() => readDesigners())
 
-  useEffect(() => { try { localStorage.setItem('admin_designers', JSON.stringify(designers)) } catch {} }, [designers])
+  useEffect(() => { 
+    try { 
+      localStorage.setItem('admin_designers', JSON.stringify(designers)) 
+    } catch {
+      // ignore localStorage error
+    }
+  }, [designers])
 
   const handleDelete = (id) => {
     if (!confirm('Eliminar diseñador?')) return

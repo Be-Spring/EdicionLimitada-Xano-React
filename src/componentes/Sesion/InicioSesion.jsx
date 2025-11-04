@@ -32,10 +32,10 @@ export default function InicioSesion() {
     setLoading(true)
     try {
       // authLogin ya guarda el token en local/session storage mediante setToken
-      const data = await authLogin({ email: email.trim(), password, remember })
-      // opcional: data.user puede contener info del usuario
-  // notify header and other listeners
-  window.dispatchEvent(new Event('auth_changed'))
+      await authLogin({ email: email.trim(), password, remember })
+      // optional: data.user puede contener info del usuario
+      // notify header and other listeners
+      window.dispatchEvent(new Event('auth_changed'))
       navigate('/')
     } catch (err) {
       const msg = err?.response?.data?.message || err.message || 'Error al iniciar sesión.'

@@ -7,7 +7,7 @@ export function AuthProvider({ children }) {
     try {
       const authUser = localStorage.getItem('auth_user')
       return authUser ? JSON.parse(authUser) : null
-    } catch (e) {
+    } catch {
       return null
     }
   })
@@ -17,7 +17,7 @@ export function AuthProvider({ children }) {
       try {
         const authUser = localStorage.getItem('auth_user')
         setUser(authUser ? JSON.parse(authUser) : null)
-      } catch (e) {
+      } catch {
         setUser(null)
       }
     }

@@ -13,7 +13,11 @@ export default function ClientesAdmin() {
   const [editing, setEditing] = useState(null)
 
   useEffect(() => {
-    try { localStorage.setItem('admin_clients', JSON.stringify(clients)) } catch {}
+    try { 
+      localStorage.setItem('admin_clients', JSON.stringify(clients)) 
+    } catch {
+      // ignore localStorage error
+    }
   }, [clients])
 
   const handleDelete = (id) => {

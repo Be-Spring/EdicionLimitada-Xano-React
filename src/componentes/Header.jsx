@@ -10,12 +10,12 @@ export const Header = () => {
   const totalCount = (items || []).reduce((s, it) => s + (it.quantity || 0), 0)
   const navigate = useNavigate()
   const [user, setUser] = useState(() => {
-    try { return JSON.parse(localStorage.getItem('auth_user')) } catch (e) { return null }
+    try { return JSON.parse(localStorage.getItem('auth_user')) } catch { return null }
   })
 
   useEffect(() => {
     const handleAuthChange = () => {
-      try { setUser(JSON.parse(localStorage.getItem('auth_user'))) } catch (e) { setUser(null) }
+      try { setUser(JSON.parse(localStorage.getItem('auth_user'))) } catch { setUser(null) }
     }
     // Listen for custom event when login/logout happens
     window.addEventListener('auth_changed', handleAuthChange)
@@ -28,7 +28,9 @@ export const Header = () => {
   }, [])
 
   const handleLogout = () => {
-    try { authLogout() } catch (e) {}
+    try { authLogout() } catch {
+      // ignore error
+    }
     localStorage.removeItem('auth_user')
     window.dispatchEvent(new Event('auth_changed'))
     // show flash message

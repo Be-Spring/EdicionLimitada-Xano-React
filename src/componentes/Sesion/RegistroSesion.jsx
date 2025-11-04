@@ -9,7 +9,6 @@ export default function RegistroSesion() {
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
     const [phone, setPhone] = useState('')
-    const [remember, setRemember] = useState(true)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
     const [success, setSuccess] = useState(null)
@@ -32,10 +31,12 @@ export default function RegistroSesion() {
         if (!validate()) return
         setLoading(true)
         try {
-            const data = await authSignup({ name: name.trim(), email: email.trim(), password, remember })
+            await authSignup({ name: name.trim(), email: email.trim(), password, remember: true })
             setSuccess('Registro completado. Redirigiendo al inicio de sesión...')
             // optionally refresh user info
-            try { await authMe() } catch (err) {}
+            try { await authMe() } catch {
+                // ignore error
+            }
             window.dispatchEvent(new Event('auth_changed'))
             setTimeout(() => navigate('/sesion/inicioSesion'), 1200)
         } catch (err) {

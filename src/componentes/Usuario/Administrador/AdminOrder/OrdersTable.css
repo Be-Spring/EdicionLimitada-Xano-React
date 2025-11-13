@@ -1,0 +1,8 @@
+.orders-table table{width:100%;border-collapse:collapse;color:#fff}
+.orders-table thead th{background:#0b0b0b;padding:0.75rem;text-align:left;border-bottom:1px solid rgba(255,255,255,0.04)}
+.orders-table tbody td{padding:0.65rem;border-bottom:1px solid rgba(255,255,255,0.03)}
+.orders-table .actions{display:flex;gap:0.5rem}
+.orders-table .btn{padding:0.35rem 0.6rem;border-radius:6px;border:none;cursor:pointer}
+.orders-table .btn-view{background:transparent;border:1px solid rgba(255,255,255,0.06);color:#fff}
+.orders-table .btn-accept{background:#1fa94a;color:#fff}
+.orders-table .btn-reject{background:#e74c3c;color:#fff}

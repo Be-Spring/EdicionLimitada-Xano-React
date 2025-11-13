@@ -1,0 +1,2 @@
+.admin-product-list .product-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.admin-product-list .card{background:#0f0f0f;border:1px solid rgba(255,255,255,0.03);padding:0;border-radius:8px}

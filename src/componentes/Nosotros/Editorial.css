@@ -1,0 +1,71 @@
+/* Styles scoped to the Editorial component */
+.editorial-header {
+  background: #0b0b0b;
+}
+
+.featured-post {
+  position: relative;
+  overflow: hidden;
+  border: none;
+}
+.featured-post .card-img {
+  width: 100%;
+  height: 420px;
+  object-fit: cover;
+  filter: brightness(0.7);
+}
+.featured-overlay {
+  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+  padding: 2rem;
+}
+.featured-post .card-title {
+  font-size: 2rem;
+  color: #fff;
+}
+.featured-post .card-text {
+  color: rgba(255,255,255,0.9);
+}
+.card-meta {
+  color: rgba(255,255,255,0.8);
+}
+
+.blog-card .card-img-top {
+  height: 200px;
+  object-fit: cover;
+}
+.blog-card .blog-category {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+  font-size: 0.85rem;
+}
+.blog-card .blog-title {
+  color: #fff;
+}
+.blog-card .blog-excerpt {
+  color: rgba(255,255,255,0.85);
+}
+
+.categories-grid .category-card {
+  overflow: hidden;
+  border: none;
+}
+.categories-grid .card-img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+}
+.category-overlay {
+  background: rgba(0,0,0,0.45);
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .featured-post .card-img {
+    height: 260px;
+  }
+}
+
+/* Utility */
+.michroma-regular { font-family: 'Michroma', sans-serif; }

@@ -1,0 +1,263 @@
+/* General Styles */
+body {
+    background-color: #000000;
+    color: #ffffff;
+    /*
+      NOTE: This file used to contain many global and component-specific styles.
+      We've consolidated general application styles into `src/App.css` (this file)
+      and moved index-specific styles into component CSS files under
+      `src/componentes/Index/`. To avoid losing work, the original rules are
+      preserved below as a commented archive. If you need to re-enable or copy
+      any rule into a component CSS file, uncomment and move it there.
+
+      The active, live styles should be in `src/App.css` (global) or the
+      specific component CSS files. Do not create new CSS files; reuse the
+      existing component CSS files when adding rules.
+
+      Archived styles (original content of styles.css):
+
+    */
+
+    /*
+    (START ARCHIVE)
+
+    */
+
+    /*
+    -- archived styles removed for brevity --
+    */
+
+}
+
+.btn-group .btn:last-child {
+    margin-right: 0;
+}
+
+/* Toast notifications positioning */
+.toast-container {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    z-index: 9999;
+}
+
+/* Designer visual rules moved to
+     src/componentes/Nosotros/Disenador.css
+     (kept here as reference/backup). */
+/* .designer-box and related admin designer styles moved. */
+
+/* Modal Admin*/
+.modal-el .modal-content {
+  background-color: #1a1a1a;
+  color: #ffffff;
+  border: 1px solid #333;
+  border-radius: 8px;
+}
+
+.modal-el .modal-header,
+.modal-el .modal-footer {
+  border-color: #333;
+}
+
+/* Botón de cerrar visible en fondo oscuro */
+.modal-el .btn-close {
+  filter: invert(1) grayscale(100%);
+  opacity: 0.85;
+}
+.modal-el .btn-close:hover {
+  opacity: 1;
+}
+
+/* Mensaje */
+.modal-el .modal-message {
+  color: #e0e0e0; 
+}
+
+/* Icono del título alineado */
+.modal-el .modal-title i {
+  vertical-align: -2px;
+}
+
+
+/*Estilos específicos para la grilla de administrador */
+
+.designer-admin-card {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+    transition: transform 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.designer-admin-card:hover {
+    transform: translateY(-3px);
+    border-color: #555;
+}
+
+.designer-admin-image {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-bottom: 0.75rem;
+}
+
+.designer-admin-name {
+    color: #ffffff;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.5rem;
+}
+
+.designer-admin-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.designer-admin-actions .btn {
+    flex: 1;
+    font-size: 0.85rem;
+    padding: 0.4rem 0.6rem;
+}
+
+@media (max-width: 991px) {
+    .designer-admin-actions .btn-text {
+    display: none;
+    }
+    .designer-admin-actions .btn {
+    padding: 0.4rem;
+    }
+}
+
+/* ===== ESTILOS ESPECÍFICOS DEL DASHBOARD ADMINISTRATIVO ===== */
+
+/* Tarjetas de métricas mejoradas */
+.dashboard-card {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    color: #ffffff;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.dashboard-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #007bff, #28a745, #ffc107, #dc3545);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.dashboard-card:hover::before {
+    opacity: 1;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border-color: #555;
+}
+
+.dashboard-card .card-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.9;
+}
+
+.dashboard-card .card-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(45deg, #ffffff, #cccccc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.dashboard-card .card-label {
+    color: #aaa;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
+}
+
+.dashboard-card .card-trend {
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* Tarjetas de administración */
+.admin-card {
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.admin-card:hover {
+    border-color: #555;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+.admin-card .card-header {
+    background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+    border-bottom: 1px solid #333;
+    border-radius: 12px 12px 0 0 !important;
+}
+
+/* Botones de acciones rápidas */
+.quick-action-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid transparent;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    min-height: 140px;
+    position: relative;
+    overflow: hidden;
+}
+
+.quick-action-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.quick-action-btn:hover::before {
+    left: 100%;
+}
+
+.quick-action-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Product and table styles moved to component CSS files:
+   - product alert card, small avatar -> src/componentes/Producto/ProductCard.css
+   - products table and dark table styles -> src/componentes/Producto/ProductGrid.css
+
+   Keeping this placeholder here as a reference/backup of the original rules.
+*/

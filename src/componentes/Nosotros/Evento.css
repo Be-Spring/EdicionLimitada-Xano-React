@@ -1,0 +1,38 @@
+/* Styles for Nosotros/Evento component */
+.evento-root {
+	background: #0b0b0b;
+	color: #fff;
+}
+
+.evento-root .container {
+	max-width: 1100px;
+}
+
+.evento-root .michroma-regular {
+	font-family: 'Michroma', sans-serif;
+	letter-spacing: 1px;
+}
+
+.featured-event .card-img {
+	height: 420px;
+	object-fit: cover;
+}
+
+.featured-overlay {
+	background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0.15));
+}
+
+.countdown-timer .countdown-number {
+	font-size: 1.6rem;
+	font-weight: 700;
+}
+.countdown-label { font-size: 0.75rem; }
+
+.event-card .card-img-top { height: 220px; object-fit: cover; }
+.event-date { position: absolute; left: 12px; top: 12px; background: rgba(0,0,0,0.6); padding: 6px 10px; border-radius: 4px; color: #fff; }
+
+.gallery-card .card-img { height: 160px; object-fit: cover; }
+.gallery-overlay { background: rgba(0,0,0,0.45); }
+
+.btn.michroma-regular { font-family: 'Michroma', sans-serif; }
+

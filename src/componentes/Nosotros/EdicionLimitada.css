@@ -1,0 +1,36 @@
+/* Edición Limitada - visual baseline */
+.about-section {
+	background: transparent;
+	padding-top: 3rem;
+	padding-bottom: 3rem;
+}
+
+.about-section .big-logo {
+	font-size: 2rem;
+	font-weight: 700;
+	color: #fff;
+	background: #111;
+	padding: 2rem 1.5rem;
+	border-radius: 8px;
+}
+
+.content-text {
+	color: #eaeaea;
+	line-height: 1.6;
+}
+
+.store-info p {
+	color: #ddd;
+}
+
+.social-link i {
+	color: #fff;
+}
+
+@media (max-width: 768px) {
+	.about-section .big-logo {
+		font-size: 1.25rem;
+		padding: 1rem;
+	}
+}
+

@@ -1,0 +1,19 @@
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #0b0b0b; /* dark background similar to site's theme */
+  color: #fff;
+}
+
+.admin-main {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.admin-content {
+  padding: 1.5rem;
+  flex: 1 1 auto;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(10,10,10,1) 100%);
+}

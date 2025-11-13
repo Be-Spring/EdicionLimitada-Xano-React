@@ -14,6 +14,13 @@ export function CartProvider({ children }) {
     }
   })
 
+  // UI state for cart drawer
+  const [isOpen, setIsOpen] = useState(false)
+
+  const openCart = () => setIsOpen(true)
+  const closeCart = () => setIsOpen(false)
+  const toggleCart = () => setIsOpen((v) => !v)
+
   useEffect(() => {
     try {
       localStorage.setItem('cart', JSON.stringify(items))
@@ -45,7 +52,7 @@ export function CartProvider({ children }) {
   const total = items.reduce((sum, it) => sum + (it.product.price || 0) * it.quantity, 0)
 
   return (
-    <CartContext.Provider value={{ items, addToCart, removeFromCart, updateQuantity, clearCart, total }}>
+    <CartContext.Provider value={{ items, addToCart, removeFromCart, updateQuantity, clearCart, total, isOpen, openCart, closeCart, toggleCart }}>
       {children}
     </CartContext.Provider>
   )

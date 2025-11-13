@@ -1,0 +1,145 @@
+/* Designers (Nosotros) - visual baseline */
+.designers-list {
+	background: transparent;
+	padding: 1rem 0;
+}
+
+.designers-list h4 {
+	font-size: 1.1rem;
+	margin-bottom: 0.75rem;
+	color: #fff;
+}
+
+.alphabet-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.alphabet-list li {
+	margin: 0.35rem 0;
+}
+
+.alphabet-list a {
+	color: #ddd;
+	text-decoration: none;
+	font-size: 0.95rem;
+}
+
+.alphabet-list a:hover {
+	color: #fff;
+}
+
+.designers-grid .row {
+	gap: 1rem;
+}
+
+.designers-grid .card {
+	background: #1b1b1b;
+	border: none;
+	color: #fff;
+	padding: 1rem;
+	border-radius: 6px;
+}
+
+.content-text {
+	color: #e9e9e9;
+	line-height: 1.5;
+}
+
+.store-info p {
+	color: #ddd;
+}
+
+.social-link i {
+	color: #fff;
+}
+
+/* small responsive tweaks */
+@media (max-width: 768px) {
+	.designers-list {
+		margin-bottom: 1rem;
+	}
+}
+
+/* Moved designer/admin-specific styles from the legacy global stylesheet */
+.designer-box {
+	position: relative;
+	background-color: #1a1a1a;
+	border: 1px solid #333;
+	border-radius: 8px;
+	padding: 2.75rem 1rem 1rem; /* espacio arriba para los botones */
+	text-align: center;
+	color: #fff;
+	min-height: 110px;
+}
+.designer-box .top-actions {
+	position: absolute;
+	top: .5rem;
+	right: .5rem;
+	display: flex;
+	gap: .5rem;
+}
+
+.designer-box.selected {
+  background-color: rgba(255,255,255,0.1);
+  outline: 1px solid #666;
+}
+
+.designer-admin-card {
+	background: #1a1a1a;
+	border: 1px solid #333;
+	border-radius: 8px;
+	padding: 1rem;
+	text-align: center;
+	transition: transform 0.3s ease;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+.designer-admin-card:hover {
+	transform: translateY(-3px);
+	border-color: #555;
+}
+
+.designer-admin-image {
+	width: 100%;
+	height: 150px;
+	object-fit: cover;
+	border-radius: 6px;
+	margin-bottom: 0.75rem;
+}
+
+.designer-admin-name {
+	color: #ffffff;
+	font-weight: 600;
+	margin-bottom: 1rem;
+	flex: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 2.5rem;
+}
+
+.designer-admin-actions {
+	display: flex;
+	gap: 0.5rem;
+	justify-content: center;
+}
+
+.designer-admin-actions .btn {
+	flex: 1;
+	font-size: 0.85rem;
+	padding: 0.4rem 0.6rem;
+}
+
+@media (max-width: 991px) {
+	.designer-admin-actions .btn-text {
+	display: none;
+	}
+	.designer-admin-actions .btn {
+	padding: 0.4rem;
+	}
+}
+

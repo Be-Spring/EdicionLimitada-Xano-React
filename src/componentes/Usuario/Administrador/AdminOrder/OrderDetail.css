@@ -1,0 +1,8 @@
+.order-detail-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;padding:1rem;z-index:1200}
+.order-detail-card{width:720px;max-width:95%;background:#0f0f0f;border:1px solid rgba(255,255,255,0.04);padding:1rem;border-radius:8px;color:#fff}
+.detail-header{display:flex;justify-content:space-between;align-items:center}
+.detail-body{margin-top:0.5rem}
+.detail-actions{display:flex;gap:0.5rem;padding-top:0.75rem}
+.btn-close{background:transparent;border:1px solid rgba(255,255,255,0.06);color:#fff;padding:0.35rem 0.6rem;border-radius:6px}
+.btn-accept{background:#1fa94a;color:#fff;padding:0.45rem 0.7rem;border-radius:6px;border:none}
+.btn-reject{background:#e74c3c;color:#fff;padding:0.45rem 0.7rem;border-radius:6px;border:none}

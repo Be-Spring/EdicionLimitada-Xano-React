@@ -1,0 +1,85 @@
+/* Categoría styles (copied from New.css and renamed to categoria- prefix) */
+.categoria-section {
+	background-color: var(--dark-bg);
+	padding: 4rem 0;
+}
+
+.categoria-card, .categoria-card-zoom {
+	background: #1a1a1a;
+	border-radius: 8px;
+	overflow: hidden;
+	height: 100%;
+}
+
+.categoria-card {
+	transition: transform 0.3s ease;
+}
+
+.categoria-card:hover {
+	transform: translateY(-5px);
+}
+
+.categoria-image {
+	height: 300px;
+	object-fit: cover;
+	width: 100%;
+}
+
+.categoria-header {
+	margin-top: 80px;
+	background-color: #000000;
+	color: #ffffff;
+}
+
+.categoria-card-zoom .categoria-image-container {
+	overflow: hidden;
+	position: relative;
+}
+
+.categoria-card-zoom .categoria-image {
+	transition: transform 0.5s ease;
+}
+
+.categoria-card-zoom:hover .categoria-image {
+	transform: scale(1.05);
+}
+
+.categoria-card-zoom h5,
+.categoria-title {
+	color: #ffffff;
+	font-size: 1rem;
+	margin-top: 1rem;
+}
+
+.categoria-card-zoom .text-muted {
+	color: #999 !important;
+	font-size: 0.9rem;
+}
+
+.categoria-card-zoom .fw-bold {
+	color: #ffffff;
+	font-size: 1.1rem;
+}
+
+/* Scoped column for category cards (avoid touching global .col-lg-3 behavior) */
+.categoria-col {
+	flex: 0 0 auto;
+	width: 25%;
+}
+
+@media (max-width: 991px) {
+	.categoria-col {
+		width: 50%;
+	}
+}
+
+@media (max-width: 767px) {
+	.categoria-col {
+		width: 100%;
+	}
+
+	.categoria-image {
+		height: 200px;
+	}
+}
+

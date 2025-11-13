@@ -1,0 +1,5 @@
+.pis-root { background: #121212; }
+.pis-nav { position: absolute; top: 50%; transform: translateY(-50%); }
+.pis-nav-left { left: 8px; }
+.pis-nav-right { right: 8px; }
+.pis-dots { bottom: 8px; left: 50%; transform: translateX(-50%); }

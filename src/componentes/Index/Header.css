@@ -1,0 +1,77 @@
+/* Navigation Styles (migrated from src/componentes/styles.css) */
+.navbar {
+	min-height: 80px;
+	padding: 1rem 0;
+	background-color: #000000 !important;
+}
+
+.logo-container {
+	display: flex;
+	align-items: center;
+}
+
+@media (max-width: 991.98px) {
+	.navbar {
+		padding: 0.5rem 0;
+	}
+    
+	.navbar-collapse {
+		max-height: calc(100vh - 80px);
+		overflow-y: auto;
+	}
+}
+
+.navbar-logo {
+	height: 40px;
+	width: auto;
+	margin-right: 1rem;
+}
+
+.logo-container {
+	min-width: 100px;
+	border-color: #fff !important;
+}
+
+.dropdown-menu {
+	background-color: #000000 !important;
+	border: 1px solid #333;
+}
+
+.dropdown-item {
+	color: #ffffff !important;
+	padding: 0.5rem 1rem;
+}
+
+.dropdown-item:hover, .dropdown-item:focus {
+	background-color: #333 !important;
+	color: #ffffff !important;
+}
+
+@media (max-width: 991.98px) {
+	.navbar-collapse {
+		background-color: #000000;
+		padding: 1rem;
+		border-radius: 8px;
+		margin-top: 0.5rem;
+	}
+
+	.dropdown-menu {
+		background-color: #111111 !important;
+		border: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	.dropdown-item {
+		padding: 0.75rem 1.5rem;
+	}
+
+	.navbar-nav .nav-item {
+		padding: 0.5rem 0;
+	}
+
+	.navbar-nav .dropdown-menu {
+		box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.1);
+	}
+}
+

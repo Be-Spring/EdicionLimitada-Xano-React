@@ -1,0 +1,13 @@
+.admin-topbar{
+  height:64px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 1.25rem;
+  border-bottom:1px solid rgba(255,255,255,0.03);
+  background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0));
+}
+.topbar-title{font-size:1.25rem;margin:0;font-weight:700}
+.topbar-right{display:flex;gap:0.5rem}
+.btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:#fff;padding:0.4rem 0.6rem;border-radius:6px;cursor:pointer}
+.btn-ghost:hover{background:rgba(255,255,255,0.02)}

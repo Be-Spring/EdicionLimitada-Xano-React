@@ -1,0 +1,61 @@
+.product-card-zoom {
+  background: #0f0f0f;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.product-card-zoom:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0,0,0,.35);
+}
+.product-image-container {
+  background: #111;
+}
+
+/* Product alert card styles moved from global archive */
+.product-alert-card {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.product-alert-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.product-alert-card.border-danger {
+  border-color: #dc3545 !important;
+  box-shadow: 0 0 0 0.1rem rgba(220, 53, 69, 0.1);
+}
+
+.product-alert-card.border-warning {
+  border-color: #ffc107 !important;
+  box-shadow: 0 0 0 0.1rem rgba(255, 193, 7, 0.1);
+}
+
+.product-alert-card .product-image {
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px 8px 0 0;
+  transition: transform 0.3s ease;
+}
+
+.product-alert-card:hover .product-image {
+  transform: scale(1.05);
+}
+
+.avatar-sm {
+  width: 35px;
+  height: 35px;
+  font-size: 0.875rem;
+}
+
+@media (max-width: 768px) {
+  .product-alert-card .product-image {
+    height: 150px;
+  }
+}

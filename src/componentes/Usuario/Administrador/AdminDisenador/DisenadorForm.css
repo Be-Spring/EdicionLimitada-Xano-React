@@ -1,0 +1,6 @@
+.disenador-form{background:#0f0f0f;border:1px solid rgba(255,255,255,0.03);border-radius:8px;color:#fff}
+.disenador-form h4{margin-top:0;margin-bottom:0.75rem}
+.disenador-form .form-label{display:block;margin-bottom:0.35rem;color:rgba(255,255,255,0.85)}
+.disenador-form .form-control{width:100%;padding:0.45rem;border-radius:6px;border:1px solid rgba(255,255,255,0.03);background:#0b0b0b;color:#fff}
+.disenador-form .btn-primary{background:#1fa94a;border:none;color:#fff;padding:0.45rem 0.7rem;border-radius:6px}
+.disenador-form .btn-secondary{background:transparent;border:1px solid rgba(255,255,255,0.06);color:#fff;padding:0.45rem 0.7rem;border-radius:6px}

@@ -6,6 +6,7 @@ import PageHome from './pages/Home/PageHome.jsx'
 import PageProducto from './pages/Home/PageProducto.jsx'
 import PageContacto from './pages/Home/PageContacto.jsx'
 import PageInicioSesion from './pages/Home/PageInicioSesion.jsx'
+import LoginAdmin from './componentes/Formularios/LoginAdmin.jsx'
 import Registro from './componentes/Formularios/Registro.jsx'
 import PageBlogEditorial from './pages/Home/PageBlogEditorial.jsx'
 import PageBlogEventos from './pages/Home/PageBlogEventos.jsx'
@@ -28,6 +29,8 @@ export default function App() {
 				<Route path="/productos" element={<PageProducto />} />
 				<Route path="/contacto" element={<PageContacto />} />
 				<Route path="/sesion" element={<PageInicioSesion />} />
+				{/* Ruta temporal para login de administrador en DEV */}
+				<Route path="/sesion-admin" element={<LoginAdmin />} />
 				<Route path="/registro" element={<Registro />} />
 				<Route path="/blog/editorial" element={<PageBlogEditorial />} />
 				<Route path="/blog/eventos" element={<PageBlogEventos />} />

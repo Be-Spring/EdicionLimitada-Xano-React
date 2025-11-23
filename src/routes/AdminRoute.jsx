@@ -12,8 +12,13 @@ export default function AdminRoute({ children }){
 
   // Prefer role-based check (matches your Xano `user.rol` enum).
   const role = (user.rol || user.role || '').toString().toLowerCase()
-  const isAdmin = role === 'administrador'
+  const estado = (user.estado || user.status || '').toString().toLowerCase() || 'activo'
+  const isAdmin = role === 'administrador' || role === 'admin'
 
+  // If account is not active, send to login so they know it's blocked.
+  if (estado !== 'activo') return <Navigate to="/sesion" replace />
+
+  // If user is authenticated but not admin, redirect to normal home (not to login)
   if (!isAdmin) return <Navigate to="/" replace />
 
   return children

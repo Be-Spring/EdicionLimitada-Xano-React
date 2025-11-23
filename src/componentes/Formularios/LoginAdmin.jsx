@@ -4,9 +4,9 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import './Login.css'
 
-export default function InicioSesion() {
+export default function InicioSesionAdmin() {
   const navigate = useNavigate()
-  const { loginCliente, loginAdmin } = useAuth()
+  const { loginAdmin } = useAuth()   // usar la función correcta
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -23,23 +23,11 @@ export default function InicioSesion() {
       return
     }
 
-    console.debug('[Login] submit', { email })
-
     setLoading(true)
     try {
-      const emailLower = (email || '').toString().trim().toLowerCase()
-      if (emailLower === 'administrador@edicionlimitada.cl') {
-        // intentar loginAdmin para administrador
-        const result = await loginAdmin({ email: emailLower, password })
-        // Ensure stored user is available before navigation
-        try { localStorage.setItem('auth_user', JSON.stringify(result.user || { email: emailLower, rol: 'administrador', estado: 'activo' })) } catch (e) {}
-        try { localStorage.setItem('auth_token', result.token) } catch (e) {}
-        navigate('/administrador')
-      } else {
-        await loginCliente({ email: emailLower, password })
-        // si llegó aquí: cliente ACTIVO y rol "cliente"
-        navigate('/')          // redirige al home de la tienda
-      }
+      await loginAdmin({ email: email.trim(), password })
+      // si llegó aquí: administrador ACTIVO y rol "administrador"
+      navigate('/administrador')
     } catch (err) {
       setError(err?.message || 'Error al iniciar sesión.')
     } finally {

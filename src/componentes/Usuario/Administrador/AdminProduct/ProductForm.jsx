@@ -42,14 +42,18 @@ export default function ProductForm({ initial = null, onSave = () => {}, onCance
   const handleSave = async (e) => {
     e.preventDefault()
     setLoading(true)
-    setStatus('Simulando guardado (UI-only)...')
-    // no network calls now — just return payload to parent
+    setStatus('Enviando al servidor...')
+    // Pass payload (including File[] as images) to parent which will call API
     const payload = { ...form, images: files }
-    setTimeout(() => {
+    try {
+      await onSave(payload)
+      setStatus('Guardado correctamente')
+    } catch (err) {
+      console.error('ProductForm save error', err)
+      setStatus(err?.message || 'Error al guardar')
+    } finally {
       setLoading(false)
-      setStatus('Guardado (simulado)')
-      onSave(payload)
-    }, 700)
+    }
   }
 
   return (

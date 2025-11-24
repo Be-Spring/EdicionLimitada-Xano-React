@@ -7,7 +7,7 @@ import PageProducto from './pages/Home/PageProducto.jsx'
 import PageContacto from './pages/Home/PageContacto.jsx'
 import PageInicioSesion from './pages/Home/PageInicioSesion.jsx'
 import LoginAdmin from './componentes/Formularios/LoginAdmin.jsx'
-import Registro from './componentes/Formularios/Registro.jsx'
+import PageRegistro from './pages/Home/PageRegistro.jsx'
 import PageBlogEditorial from './pages/Home/PageBlogEditorial.jsx'
 import PageBlogEventos from './pages/Home/PageBlogEventos.jsx'
 import PageNosotrosED from './pages/Home/PageNosotrosED.jsx'
@@ -32,7 +32,7 @@ export default function App() {
 				<Route path="/contacto" element={<PageContacto />} />
 				<Route path="/sesion" element={<PageInicioSesion />} />
 				<Route path="/sesion-admin" element={<PageInicioSesionAdmin />} />
-				<Route path="/registro" element={<Registro />} />
+				<Route path="/registro" element={<PageRegistro />} />
 				<Route path="/blog/editorial" element={<PageBlogEditorial />} />
 				<Route path="/blog/eventos" element={<PageBlogEventos />} />
 				<Route path="/nosotros/edicion-limitada" element={<PageNosotrosED />} />

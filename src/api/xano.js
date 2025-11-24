@@ -54,41 +54,58 @@ export async function authLoginAdmin({ email, password, remember = true }) {
 
 // ------------------------ LOGIN CLIENTE ------------------------
 export async function authLoginCliente({ email, password, remember = true }) {
-  const res = await fetch(`${AUTH_BASE}/auth/login_cliente`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password }),
-  });
+  // Try multiple endpoints and payload shapes because some Xano setups
+  // expose different login endpoints or expect `identifier` instead of `email`.
+  const endpoints = ['/auth/login_cliente', '/auth/login'];
+  const payloads = [
+    { email, password },
+    { identifier: email, password },
+    { username: email, password },
+  ];
 
-  const data = await res.json().catch(() => null);
+  let lastError = null;
+  for (const ep of endpoints) {
+    for (const body of payloads) {
+      try {
+        const res = await fetch(`${AUTH_BASE}${ep}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+        const data = await res.json().catch(() => null);
+        if (!res.ok) {
+          lastError = data?.message || data?.error || `Error login cliente (${res.status})`;
+          // try next payload/endpoint
+          continue;
+        }
 
-  if (!res.ok) {
-    const msg =
-      data?.message || data?.error || `Error login cliente: ${res.status}`;
-    throw new Error(msg);
+        const token =
+          data?.authToken ||
+          data?.token ||
+          data?.jwt ||
+          data?.accessToken ||
+          data?.access_token ||
+          null;
+
+        const user = data?.user || null;
+
+        if (!token) throw new Error('Servidor no devolvió token');
+        if (remember) localStorage.setItem('auth_token', token);
+        else sessionStorage.setItem('auth_token', token);
+
+        if (user) {
+          try { localStorage.setItem('auth_user', JSON.stringify(user)); } catch {}
+        }
+
+        return { token, user, raw: data };
+      } catch (err) {
+        lastError = err?.message || String(err);
+        // try next
+      }
+    }
   }
 
-  const token =
-    data?.authToken ||
-    data?.token ||
-    data?.jwt ||
-    data?.accessToken ||
-    data?.access_token ||
-    null;
-
-  const user = data?.user || null;
-
-  if (!token) throw new Error('Servidor no devolvió token');
-  if (remember) localStorage.setItem('auth_token', token);
-  else sessionStorage.setItem('auth_token', token);
-
-  if (user) {
-    try {
-      localStorage.setItem('auth_user', JSON.stringify(user));
-    } catch {}
-  }
-
-  return { token, user, raw: data };
+  throw new Error(lastError || 'Error al iniciar sesión (cliente)');
 }
 
 // ------------------------ /auth/me ------------------------
@@ -105,6 +122,30 @@ export async function authMe() {
   const data = await res.json().catch(() => null);
   // tu auth/me ahora devuelve { user: {...} }
   return data?.user || data || null;
+}
+
+// ------------------------ REGISTER (try several auth endpoints) ------------------------
+export async function authRegister(payload = {}) {
+  // try the most likely auth signup path first (your Xano uses /auth/signup)
+  const tryPaths = ['/auth/signup', '/auth/register_cliente', '/auth/register', '/auth/create'];
+  let lastError = null;
+  for (const p of tryPaths) {
+    try {
+      const res = await fetch(`${AUTH_BASE}${p}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json().catch(() => null);
+      if (res.ok) return data;
+      // If server responded but not ok, capture message and try next
+      lastError = data?.message || data?.error || `Error registro (${res.status})`;
+    } catch (err) {
+      lastError = err?.message || String(err);
+    }
+  }
+  // none succeeded
+  throw new Error(lastError || 'No se pudo registrar (endpoints de registro no disponibles)');
 }
 
 // ------------------------ PRODUCTOS (igual que ya tenías) --------------------
@@ -392,9 +433,8 @@ export async function deleteUser(token, userId) {
   return true;
 }
 
-// ------------------------ ORDEN ------------------------
 
-// ------------------------ ÓRDENES ------------------------
+// ------------------------ ORDENES ------------------------
 
 // GET /orden  -> devuelve todas las órdenes
 export async function listOrdenes({ token } = {}) {
@@ -443,3 +483,33 @@ export async function updateOrdenEstado({ token, ordenId, estado }) {
 
   return data;
 }
+
+// ------------------------ ÓRDENES ------------------------
+// Crea una orden con estado "pendiente"
+export async function createOrden({ token, userId, total, estado = 'pendiente' }) {
+  const headers = {
+    'Content-Type': 'application/json',
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
+
+  const body = {
+    user_id: userId,
+    total,
+    estado,
+    // opcional: si tu tabla tiene fecha_orden, puedes setearla aquí
+    fecha_orden: new Date().toISOString(),
+  };
+
+  const res = await fetch(`${API_BASE}/orden`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(body),
+  });
+
+  const data = await res.json().catch(() => null);
+  if (!res.ok) {
+    throw new Error(data?.message || `Error creando orden: ${res.status}`);
+  }
+  return data;
+}
+

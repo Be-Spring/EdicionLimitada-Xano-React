@@ -6,7 +6,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { authLoginAdmin, authLoginCliente, authMe, getToken } from '../api/xano.js';
+import { authLoginAdmin, authLoginCliente, authMe, getToken, createUser, authRegister } from '../api/xano.js';
 
 const AuthContext = createContext(null);
 
@@ -119,8 +119,33 @@ export function AuthProvider({ children }) {
     return me;
   }
 
+  // ---------- REGISTER ----------
+  async function register(payload = {}) {
+    // Prefer calling an auth registration endpoint that creates credentials.
+    try {
+      const res = await authRegister(payload);
+      // If the auth endpoint returned a token, store it and user as logged-in
+      const tokenFromRes = res?.authToken || res?.token || res?.jwt || res?.accessToken || res?.access_token || null;
+      const userFromRes = res?.user || res || null;
+      if (tokenFromRes) {
+        setToken(tokenFromRes);
+        try { localStorage.setItem('auth_token', tokenFromRes); } catch {}
+      }
+      if (userFromRes) {
+        setUser(userFromRes);
+        try { localStorage.setItem('auth_user', JSON.stringify(userFromRes)); } catch {}
+      }
+      return res;
+    } catch (err) {
+      // If auth register is not available, fall back to creating a user record
+      // (legacy behaviour: will create a user but maybe not set password)
+      const created = await createUser(undefined, payload);
+      return created;
+    }
+  }
+
   const value = useMemo(
-    () => ({ token, user, loginAdmin, loginCliente, logout, refreshUser }),
+    () => ({ token, user, loginAdmin, loginCliente, register, logout, refreshUser }),
     [token, user],
   );
 

@@ -22,7 +22,7 @@ export default function RegistroSesion() {
         if (!email.trim()) return setError('Por favor ingresa tu correo')
         const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
         if (!emailRe.test(email)) return setError('Correo inválido')
-        if (!password || password.length < 6) return setError('La contraseña debe tener al menos 6 caracteres')
+        if (!password || password.length < 6) return setError('La contraseña debe tener al menos 8 caracteres')
         if (password !== confirmPassword) return setError('Las contraseñas no coinciden')
         return true
     }
@@ -34,7 +34,14 @@ export default function RegistroSesion() {
         if (!validate()) return
         setLoading(true)
         try {
-            await register({ name: name.trim(), email: email.trim(), password, remember })
+            await register({
+                name: name.trim(),
+                email: email.trim(),
+                password,
+                password_confirmation: confirmPassword,
+                telefono: phone,
+                remember,
+            })
             setSuccess('Registro completado. Redirigiendo al inicio de sesión...')
             setTimeout(() => navigate('/sesion'), 1200)
         } catch (err) {

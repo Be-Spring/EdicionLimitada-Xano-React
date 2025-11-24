@@ -76,6 +76,10 @@ export default function InicioSesionCliente() {
                   <span>¿No tienes una cuenta? </span>
                   <Link to="/registro" className="text-light">Regístrate aquí</Link>
                 </div>
+
+                <div className="text-center mt-2">
+                  <Link to="/sesion-admin" className="text-secondary small text-decoration-none">¿Eres administrador?</Link>
+                </div>
               </form>
 
             </div>

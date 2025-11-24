@@ -5,29 +5,29 @@ import { useAuth } from "../context/AuthContext";
 export default function AdminRoute({ children }) {
   const { user, token } = useAuth();
 
-  // no hay token → no está logueado
+  // Si no hay token → no está logueado
   if (!token) {
     return <Navigate to="/sesion-admin" replace />;
   }
 
-  // si falta user → no se cargó bien /auth/me (no debería pasar)
+  // Si hay token pero aún no tenemos user (ej. cargando /auth/me)
   if (!user) {
     return <Navigate to="/sesion-admin" replace />;
   }
 
-  const rol = (user.rol || '').toLowerCase();
-  const estado = (user.estado || '').toLowerCase();
+  const rol = (user.rol || "").toLowerCase();
+  const estado = (user.estado || "").toLowerCase();
 
-  // bloqueo por estado
+  // Bloquear usuarios inactivos
   if (estado !== "activo") {
     return <Navigate to="/sesion-admin" replace />;
   }
 
-  // bloqueo por rol incorrecto
+  // Bloquear usuarios que no sean administradores
   if (rol !== "administrador") {
     return <Navigate to="/" replace />;
   }
 
-  // todo OK → mostrar contenido admin
+  // Todo OK → mostrar la página admin
   return children;
 }

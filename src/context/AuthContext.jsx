@@ -6,7 +6,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { authLogin, authLoginCliente, authMe, getToken } from '../api/xano.js';
+import { authLoginAdmin, authLoginCliente, authMe, getToken } from '../api/xano.js';
 
 const AuthContext = createContext(null);
 
@@ -17,35 +17,89 @@ export function AuthProvider({ children }) {
     return raw ? JSON.parse(raw) : null;
   });
 
-  // si tenemos token pero no user (ej. recarga de página), pedir /auth/me
+  // Si hay token pero no user (por ejemplo al recargar la página) → pedir /auth/me
   useEffect(() => {
     if (!token || user) return;
     (async () => {
       const me = await authMe();
-      if (me) setUser(me);
+      if (me) {
+        setUser(me);
+        try { localStorage.setItem('auth_user', JSON.stringify(me)); } catch {}
+      }
     })();
   }, [token, user]);
 
-  // LOGIN ADMIN (usa /auth/login)
+  // ---------- LOGIN ADMIN ----------
   async function loginAdmin({ email, password }) {
-    const { token: t, user: u } = await authLogin({ email, password, remember: true });
-    if (!t) throw new Error('Sin token');
-    setToken(t);
-    setUser(u || (await authMe()));
-    return { token: t, user: u };
-  }
-
-  // LOGIN CLIENTE (usa /auth/login_cliente)
-  async function loginCliente({ email, password }) {
-    const { token: t, user: u } = await authLoginCliente({
+    // 1) Login: solo me importa el token
+    const { token: t } = await authLoginAdmin({
       email,
       password,
       remember: true,
     });
-    if (!t) throw new Error('Sin token');
+    if (!t) throw new Error('Sin token de autenticación');
+
+    // 2) Guardar token en estado
     setToken(t);
-    setUser(u || (await authMe()));
-    return { token: t, user: u };
+
+    // 3) Pedir SIEMPRE /auth/me para obtener usuario completo
+    const me = await authMe();
+    if (!me) throw new Error('No se pudo obtener datos de usuario');
+
+    // 4) Validar rol/estado si quieres (opcional ahora mismo)
+    const rol = (me.rol || '').toLowerCase();
+    const estado = (me.estado || '').toLowerCase();
+
+    if (rol !== 'administrador') {
+      throw new Error('No tienes permisos de administrador');
+    }
+    if (estado !== 'activo') {
+      throw new Error('Tu cuenta no está activa');
+  }
+
+    // 5) Guardar usuario en estado y en localStorage
+    setUser(me);
+    try { localStorage.setItem('auth_user', JSON.stringify(me)); } catch {}
+
+
+    return { token: t, user: me };
+  }
+
+  // ---------- LOGIN CLIENTE ----------
+  async function loginCliente({ email, password }) {
+    // 1) Login cliente
+    const { token: t } = await authLoginCliente({
+      email,
+      password,
+      remember: true,
+    });
+    if (!t) throw new Error('Sin token de autenticación');
+
+    // 2) Guardar token
+    setToken(t);
+
+    // 3) Pedir SIEMPRE /auth/me
+    const me = await authMe();
+    if (!me) throw new Error('No se pudo obtener datos de usuario');
+
+
+    // 4) Validar rol/estado si quieres después
+    const rol = (me.rol || '').toLowerCase();
+    const estado = (me.estado || '').toLowerCase();
+
+    if (rol !== 'cliente') {
+      throw new Error('Esta cuenta no es de cliente');
+    }
+    if (estado !== 'activo') {
+      throw new Error('Tu cuenta no está activa');
+    }
+
+    // 5) Guardar usuario
+    setUser(me);
+    try { localStorage.setItem('auth_user', JSON.stringify(me)); } catch {}
+
+    
+    return { token: t, user: me };
   }
 
   function logout() {

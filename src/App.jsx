@@ -20,6 +20,7 @@ import AdminUsers from './pages/Home/Admin/AdminUsers.jsx'
 import AdminOrden from './pages/Home/Admin/AdminOrden.jsx'
 import AdminDisenador from './pages/Home/Admin/AdminDisenador.jsx'
 import AdminRoute from './routes/AdminRoute.jsx'
+import PageInicioSesionAdmin from './pages/Home/Admin/PageInicioSesionAdmin.jsx'
 
 export default function App() {
 	return (
@@ -29,8 +30,7 @@ export default function App() {
 				<Route path="/productos" element={<PageProducto />} />
 				<Route path="/contacto" element={<PageContacto />} />
 				<Route path="/sesion" element={<PageInicioSesion />} />
-				{/* Ruta temporal para login de administrador en DEV */}
-				<Route path="/sesion-admin" element={<LoginAdmin />} />
+				<Route path="/sesion-admin" element={<PageInicioSesionAdmin />} />
 				<Route path="/registro" element={<Registro />} />
 				<Route path="/blog/editorial" element={<PageBlogEditorial />} />
 				<Route path="/blog/eventos" element={<PageBlogEventos />} />

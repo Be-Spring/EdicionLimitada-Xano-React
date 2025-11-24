@@ -2,26 +2,38 @@ import React, { useState } from 'react'
 import AdminLayout from '../../../componentes/Usuario/Administrador/AdminLayout/AdminLayout.jsx'
 import DisenadoresList from '../../../componentes/Usuario/Administrador/AdminDisenador/DisenadoresList.jsx'
 import DisenadorForm from '../../../componentes/Usuario/Administrador/AdminDisenador/DisenadorForm.jsx'
+import { useAuth } from '../../../context/AuthContext.jsx'
+import { createDesigner, updateDesigner } from '../../../api/xano.js'
 
 export default function AdminDisenador(){
 	const [editing, setEditing] = useState(null)
+	const [refreshFlag, setRefreshFlag] = useState(0)
+	const { token } = useAuth()
 
 	function handleEdit(d){
 		setEditing(d)
 	}
 
-	function handleSave(payload){
-		// UI-only: simulate save
-		// eslint-disable-next-line no-console
-		console.log('Designer saved (simulated):', payload)
-		setEditing(null)
+	async function handleSave(payload){
+		try {
+			if (payload.id) {
+				await updateDesigner(token, payload.id, payload)
+			} else {
+				await createDesigner(token, payload)
+			}
+			setEditing(null)
+			setRefreshFlag(f => f + 1)
+		} catch (e) {
+			console.error('save designer failed', e)
+			alert(e.message || 'Error guardando diseñador')
+		}
 	}
 
 	return (
 		<AdminLayout>
 			<div style={{display: 'flex', gap: 20, alignItems: 'flex-start'}}>
 				<div style={{flex: 1}}>
-					<DisenadoresList onEdit={handleEdit} />
+					<DisenadoresList onEdit={handleEdit} onDelete={() => setRefreshFlag(f => f + 1)} refreshFlag={refreshFlag} />
 				</div>
 
 				<div style={{width: 360}}>

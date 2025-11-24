@@ -23,17 +23,23 @@ export default function AdminProducts(){
 		return (async () => {
 			try {
 				const files = payload.images || []
+				const keepImages = payload.keepImages || []
 				const body = { ...payload }
 				delete body.images
+				delete body.keepImages
 
 				if (editing && editing.id) {
-					// update existing (PATCH)
+					// update existing: first patch basic fields, then set images array combining kept + uploaded
 					const url = `${import.meta.env.VITE_XANO_STORE_BASE}/producto/${editing.id}`
 					await fetch(url, { method: 'PATCH', headers: { ...{ 'Content-Type': 'application/json' }, ...(token ? { Authorization: `Bearer ${token}` } : {}) }, body: JSON.stringify(body) })
+
+					let finalImages = (keepImages || []).map(p => ({ path: p }))
 					if (files.length) {
 						const uploaded = await uploadImages(token, files)
-						await attachImagesToProduct(token, editing.id, uploaded)
+						finalImages = finalImages.concat(uploaded.map(u => (u.path ? { path: u.path } : u)))
 					}
+					// send images array to product endpoint to replace images (allow empty to clear)
+					await fetch(url, { method: 'PATCH', headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) }, body: JSON.stringify({ images: finalImages }) })
 				} else {
 					// create new
 					const created = await createProduct(token, body)

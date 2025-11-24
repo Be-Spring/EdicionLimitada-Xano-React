@@ -29,8 +29,9 @@ export default function ProductCard({ product }) {
   const designer =
     product.disenador_nombre ||
     product.designer ||
-    product.disenador?.nombre_disenador ||
-    "";
+    (typeof product.disenador === 'object' ? (product.disenador.nombre_disenador || product.disenador.name) : '') ||
+    (product.raw && product.raw.disenador && (product.raw.disenador.nombre_disenador || product.raw.disenador.name)) ||
+    '';
 
   // Normalizamos posibles formatos de imágenes (string url, {url}, {path})
   const normalizedImages = (Array.isArray(product.images) ? product.images : [])
@@ -62,12 +63,15 @@ export default function ProductCard({ product }) {
           <ProductImagesSlider images={normalizedImages} alt={title} aspect="4/3" />
         </div>
 
-        <div className="p-3">
-          <h5 className="mb-2">{title}</h5>
-          {designer && <p className="text-muted mb-2">{designer}</p>}
-          <p className="fw-bold mb-0">{formatPriceCLP(price)}</p>
-          <div className="mt-3">
-            <button className="btn btn-sm btn-light" onClick={handleAddToCart}>Agregar</button>
+        <div className="p-3 text-center product-card-body">
+          <h5 className="mb-2 product-title">{title}</h5>
+          {designer && <p className="text-muted mb-2 product-designer">{designer}</p>}
+          <p className="fw-bold mb-0 product-price">{formatPriceCLP(price)}</p>
+          <div className="d-flex align-items-center justify-content-between mt-3 product-footer">
+            <div>
+              <button className="btn btn-sm btn-light" onClick={handleAddToCart}>Agregar</button>
+            </div>
+            <div className="product-stock text-muted">stock: {product.stock ?? product.raw?.stock ?? 0}</div>
           </div>
         </div>
       </div>

@@ -13,6 +13,36 @@
   background: #111;
 }
 
+.product-card-body {
+  padding-bottom: 12px;
+}
+
+.product-title {
+  font-size: 1.05rem;
+  text-align: center;
+}
+
+.product-designer {
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.75);
+  margin-bottom: 6px;
+}
+
+.product-price {
+  font-size: 1rem;
+  margin-top: 4px;
+}
+
+.product-footer {
+  gap: 12px;
+}
+
+.product-stock {
+  color: rgba(255,255,255,0.6);
+  font-size: 0.9rem;
+  text-align: right;
+}
+
 /* Product alert card styles moved from global archive */
 .product-alert-card {
   background: #1a1a1a;

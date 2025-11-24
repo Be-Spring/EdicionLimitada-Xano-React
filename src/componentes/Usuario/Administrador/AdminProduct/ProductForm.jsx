@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useAuth } from '../../../../context/AuthContext.jsx'
 import './ProductForm.css'
 
 // ProductForm: UI-only component matching product table fields
@@ -13,8 +14,13 @@ export default function ProductForm({ initial = null, onSave = () => {}, onCance
     disenador: initial?.disenador || '',
   })
   const [files, setFiles] = useState([])
+  const [existingImages, setExistingImages] = useState([])
+  const [removedImages, setRemovedImages] = useState(new Set())
   const [status, setStatus] = useState('')
   const [loading, setLoading] = useState(false)
+  const [designers, setDesigners] = useState([])
+  const [categories, setCategories] = useState([])
+  const { token } = useAuth()
 
   useEffect(() => {
     if (initial) {
@@ -23,11 +29,49 @@ export default function ProductForm({ initial = null, onSave = () => {}, onCance
         descripcion: initial.descripcion || '',
         valor_producto: initial.valor_producto || 0,
         stock: initial.stock || 0,
-        categoria: initial.categoria || '',
-        disenador: initial.disenador || '',
+        categoria: (initial.categoria && (initial.categoria.id ?? initial.categoria)) || initial.categoria || '',
+        disenador: (initial.disenador && (initial.disenador.id ?? initial.disenador)) || initial.disenador || '',
       })
+      // extract existing images (try common shapes)
+      const imgs = (initial.images && Array.isArray(initial.images) && initial.images.length)
+        ? initial.images
+        : (initial.raw && initial.raw.images && Array.isArray(initial.raw.images) ? initial.raw.images : [])
+      // normalize to objects with path/url
+      const normalized = (imgs || []).map((it) => {
+        if (!it) return null
+        if (typeof it === 'string') return { path: it }
+        if (it.path) return it
+        if (it.url) return { path: it.url }
+        return it
+      }).filter(Boolean)
+      setExistingImages(normalized)
     }
   }, [initial])
+
+  useEffect(() => {
+    // try to fetch designers and categories from API, but fail silently
+    let mounted = true
+    ;(async () => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_XANO_STORE_BASE}/disenador`, { headers: token ? { Authorization: `Bearer ${token}` } : {} })
+        if (res.ok) {
+          const data = await res.json().catch(() => null)
+          const arr = Array.isArray(data) ? data : data?.items ?? data?.data ?? []
+          if (mounted) setDesigners(arr)
+        }
+      } catch (e) {}
+
+      try {
+        const r2 = await fetch(`${import.meta.env.VITE_XANO_STORE_BASE}/categoria`, { headers: token ? { Authorization: `Bearer ${token}` } : {} })
+        if (r2.ok) {
+          const d2 = await r2.json().catch(() => null)
+          const arr2 = Array.isArray(d2) ? d2 : d2?.items ?? d2?.data ?? []
+          if (mounted) setCategories(arr2)
+        }
+      } catch (e) {}
+    })()
+    return () => { mounted = false }
+  }, [token])
 
   const onChange = (e) => {
     const { name, value } = e.target
@@ -36,15 +80,34 @@ export default function ProductForm({ initial = null, onSave = () => {}, onCance
 
   const onFilesChange = (e) => {
     const list = Array.from(e.target.files || [])
-    setFiles(list)
+    setFiles((prev) => [...prev, ...list])
+  }
+
+  function toggleRemoveImage(idx){
+    setRemovedImages(prev => {
+      const copy = new Set(Array.from(prev))
+      if (copy.has(idx)) copy.delete(idx)
+      else copy.add(idx)
+      return copy
+    })
   }
 
   const handleSave = async (e) => {
     e.preventDefault()
     setLoading(true)
     setStatus('Enviando al servidor...')
-    // Pass payload (including File[] as images) to parent which will call API
-    const payload = { ...form, images: files }
+    // Pass payload: new File[] as images and keepImages (objects with path+meta) to parent
+    const kept = existingImages
+      .filter((_, i) => !removedImages.has(i))
+      .map((im) => {
+        const path = im.path || im.url || ''
+        const meta = im.meta && typeof im.meta === 'object'
+          ? im.meta
+          : { width: im.width || im.metaWidth || 0, height: im.height || im.metaHeight || 0 }
+        return { path, type: im.type || 'image', meta }
+      })
+
+    const payload = { ...form, images: files, keepImages: kept }
     try {
       await onSave(payload)
       setStatus('Guardado correctamente')
@@ -83,18 +146,50 @@ export default function ProductForm({ initial = null, onSave = () => {}, onCance
 
         <label className="form-group">
           <span>Categoría</span>
-          <input name="categoria" value={form.categoria} onChange={onChange} />
+          {categories.length ? (
+            <select name="categoria" value={form.categoria} onChange={onChange}>
+              <option value="">-- seleccionar --</option>
+              {categories.map(c => (
+                <option key={c.id} value={c.id}>{c.tipo_producto || c.nombre || c.name || c.id}</option>
+              ))}
+            </select>
+          ) : (
+            <input name="categoria" value={form.categoria} onChange={onChange} />
+          )}
         </label>
 
         <label className="form-group">
-          <span>Diseñador (ID)</span>
-          <input name="disenador" value={form.disenador} onChange={onChange} />
+          <span>Diseñador</span>
+          {designers.length ? (
+            <select name="disenador" value={form.disenador} onChange={onChange}>
+              <option value="">-- seleccionar --</option>
+              {designers.map(d => (
+                <option key={d.id} value={d.id}>{d.nombre_disenador || d.name || d.id}</option>
+              ))}
+            </select>
+          ) : (
+            <input name="disenador" value={form.disenador} onChange={onChange} />
+          )}
         </label>
 
         <label className="form-group file-group">
           <span>Imágenes (múltiples)</span>
           <input type="file" multiple accept="image/*" onChange={onFilesChange} />
         </label>
+
+        {existingImages.length > 0 && (
+          <div style={{marginTop:8}}>
+            <div style={{fontSize:12, marginBottom:6}}>Imágenes actuales (click para eliminar/recuperar)</div>
+            <div style={{display:'flex', gap:8, flexWrap:'wrap'}}>
+              {existingImages.map((img, idx) => (
+                <div key={idx} style={{position:'relative'}}>
+                  <img src={img.path || img.url} alt={`img-${idx}`} style={{width:100,height:80,objectFit:'cover',borderRadius:6,opacity: removedImages.has(idx) ? 0.4 : 1}} />
+                  <button type="button" onClick={() => toggleRemoveImage(idx)} style={{position:'absolute',right:4,top:4,background:'rgba(0,0,0,0.5)',color:'#fff',border:'none',borderRadius:4,padding:'2px 6px',cursor:'pointer'}}>{removedImages.has(idx) ? 'Recuperar' : 'Eliminar'}</button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="form-actions">
           <button type="submit" className="btn-primary" disabled={loading}>{loading ? 'Guardando...' : 'Guardar'}</button>

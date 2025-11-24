@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import './Header.css';
 import logoImg from '../../assets/img/Logo Edicion Limitada.png'
 import { CartContext } from '../../context/CartContext.jsx'
+import { useAuth } from '../../context/AuthContext.jsx'
 
 const Header = () => (
     <header className="fixed-top">
@@ -63,7 +64,29 @@ export default Header;
 
 function CartActions() {
     const { toggleCart, items } = useContext(CartContext)
+    const { user, logout } = useAuth()
     const count = items?.reduce((c, it) => c + (it.quantity || 0), 0) || 0
+
+    // Determine if the logged user is a cliente
+    const role = (user?.rol || user?.role || '').toString().toLowerCase()
+    const isCliente = role === 'cliente' || role === 'user' || role === 'usuario'
+
+    // If a cliente is logged in, show greeting + logout
+    if (user && isCliente) {
+        const displayName = user?.name || user?.nombre || user?.email || 'Cliente'
+        return (
+            <div className="d-flex align-items-center">
+                <div className="me-3 text-light">Hola, <strong>{displayName}</strong></div>
+                <button className="btn btn-outline-light me-3" onClick={() => { try { logout() } catch {} }}>Cerrar sesión</button>
+                <button className="btn btn-link text-light position-relative" id="cartButton" type="button" onClick={toggleCart} aria-label="Abrir carrito">
+                    <i className="fas fa-shopping-cart" />
+                    {count > 0 && <span className="cart-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">{count}</span>}
+                </button>
+            </div>
+        )
+    }
+
+    // Default (no cliente logged): show login/register
     return (
         <div className="d-flex align-items-center">
             <Link to="/sesion" className="btn btn-outline-light me-2">Iniciar Sesión</Link>

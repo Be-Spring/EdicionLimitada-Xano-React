@@ -1,25 +1,33 @@
-import React from 'react'
-import { Navigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext.jsx'
+// src/routes/AdminRoute.jsx
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
-// Simple AdminRoute: allow access only to a user with the admin email.
-// This is intentionally lightweight (UI-only auth check). Replace with role-based
-// logic or server-side checks when you wire the backend.
-export default function AdminRoute({ children }){
-  const { user } = useAuth()
+export default function AdminRoute({ children }) {
+  const { user, token } = useAuth();
 
-  if (!user) return <Navigate to="/sesion" replace />
+  // no hay token → no está logueado
+  if (!token) {
+    return <Navigate to="/sesion-admin" replace />;
+  }
 
-  // Prefer role-based check (matches your Xano `user.rol` enum).
-  const role = (user.rol || user.role || '').toString().toLowerCase()
-  const estado = (user.estado || user.status || '').toString().toLowerCase() || 'activo'
-  const isAdmin = role === 'administrador' || role === 'admin'
+  // si falta user → no se cargó bien /auth/me (no debería pasar)
+  if (!user) {
+    return <Navigate to="/sesion-admin" replace />;
+  }
 
-  // If account is not active, send to login so they know it's blocked.
-  if (estado !== 'activo') return <Navigate to="/sesion" replace />
+  const rol = (user.rol || '').toLowerCase();
+  const estado = (user.estado || '').toLowerCase();
 
-  // If user is authenticated but not admin, redirect to normal home (not to login)
-  if (!isAdmin) return <Navigate to="/" replace />
+  // bloqueo por estado
+  if (estado !== "activo") {
+    return <Navigate to="/sesion-admin" replace />;
+  }
 
-  return children
+  // bloqueo por rol incorrecto
+  if (rol !== "administrador") {
+    return <Navigate to="/" replace />;
+  }
+
+  // todo OK → mostrar contenido admin
+  return children;
 }

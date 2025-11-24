@@ -1,12 +1,12 @@
-// src/pages/Login/login.jsx (por ejemplo)
+
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import './Login.css'
 
-export default function InicioSesionAdmin() {
+export default function InicioSesionCliente() {
   const navigate = useNavigate()
-  const { loginAdmin } = useAuth()
+  const { loginCliente } = useAuth()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -25,8 +25,8 @@ export default function InicioSesionAdmin() {
 
     setLoading(true)
     try {
-      await loginAdmin({ email: email.trim(), password })
-      navigate('/administrador')
+      await loginCliente({ email: email.trim(), password })
+      navigate('/')
     } catch (err) {
       setError(err?.message || 'Error al iniciar sesión.')
     } finally {

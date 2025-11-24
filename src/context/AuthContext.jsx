@@ -110,8 +110,17 @@ export function AuthProvider({ children }) {
     sessionStorage.removeItem('auth_token');
   }
 
+  // ---------- REFRESH USER ----------
+  async function refreshUser() {
+    const me = await authMe();
+    if (!me) return null;
+    setUser(me);
+    try { localStorage.setItem('auth_user', JSON.stringify(me)); } catch {}
+    return me;
+  }
+
   const value = useMemo(
-    () => ({ token, user, loginAdmin, loginCliente, logout }),
+    () => ({ token, user, loginAdmin, loginCliente, logout, refreshUser }),
     [token, user],
   );
 

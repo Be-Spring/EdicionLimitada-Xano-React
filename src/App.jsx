@@ -13,6 +13,7 @@ import PageBlogEventos from './pages/Home/PageBlogEventos.jsx'
 import PageNosotrosED from './pages/Home/PageNosotrosED.jsx'
 import PageNosotrosDisenadores from './pages/Home/PageNosotrosDisenadores.jsx'
 import Carrito from './componentes/Carrito/Carrito.jsx'
+import PageDatosPersonales from './pages/Home/Cliente/PageDatosPersonales.jsx'
 // Admin pages
 import AdminHome from './pages/Home/Admin/AdminHome.jsx'
 import AdminProducts from './pages/Home/Admin/AdminProducts.jsx'
@@ -36,6 +37,7 @@ export default function App() {
 				<Route path="/blog/eventos" element={<PageBlogEventos />} />
 				<Route path="/nosotros/edicion-limitada" element={<PageNosotrosED />} />
 				<Route path="/nosotros/disenadores" element={<PageNosotrosDisenadores />} />
+				<Route path="/perfil/datos-personales" element={<PageDatosPersonales />} />
 		
 				{/* Admin area (UI-only pages) */}
 				<Route path="/administrador" element={<AdminRoute><AdminHome /></AdminRoute>} />

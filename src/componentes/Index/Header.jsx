@@ -71,13 +71,21 @@ function CartActions() {
     const role = (user?.rol || user?.role || '').toString().toLowerCase()
     const isCliente = role === 'cliente' || role === 'user' || role === 'usuario'
 
-    // If a cliente is logged in, show greeting + logout
+    // If a cliente is logged in, show a mini dropdown menu with profile + logout
     if (user && isCliente) {
         const displayName = user?.name || user?.nombre || user?.email || 'Cliente'
         return (
             <div className="d-flex align-items-center">
-                <div className="me-3 text-light">Hola, <strong>{displayName}</strong></div>
-                <button className="btn btn-outline-light me-3" onClick={() => { try { logout() } catch {} }}>Cerrar sesión</button>
+                <div className="dropdown me-3">
+                    <button className="btn btn-outline-light dropdown-toggle" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                        Hola, <strong>{displayName}</strong>
+                    </button>
+                    <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+                        <li><Link className="dropdown-item" to="/perfil/datos-personales">Datos personales</Link></li>
+                        <li><hr className="dropdown-divider" /></li>
+                        <li><button className="dropdown-item" onClick={() => { try { logout() } catch {} }}>Cerrar sesión</button></li>
+                    </ul>
+                </div>
                 <button className="btn btn-link text-light position-relative" id="cartButton" type="button" onClick={toggleCart} aria-label="Abrir carrito">
                     <i className="fas fa-shopping-cart" />
                     {count > 0 && <span className="cart-badge position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">{count}</span>}

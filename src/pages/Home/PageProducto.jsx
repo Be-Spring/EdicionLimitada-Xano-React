@@ -75,6 +75,16 @@ export default function PageProducto() {
 		return true
 	})
 
+	// pagination
+	const [currentPage, setCurrentPage] = useState(1)
+	const [pageSize, setPageSize] = useState(12)
+	const totalItems = displayed.length
+	const totalPages = Math.max(1, Math.ceil(totalItems / pageSize))
+
+	useEffect(() => { setCurrentPage(1) }, [q, filterCat, filterDesigner, products, pageSize])
+
+	const paged = displayed.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+
 	return (
 		<>
 			<Header />
@@ -109,7 +119,22 @@ export default function PageProducto() {
 					{error && <div className="alert alert-danger">{error}</div>}
 
 					{!loading && !error && (
-						<ProductGrid products={displayed} />
+						<>
+							<ProductGrid products={paged} />
+							<div className="d-flex justify-content-between align-items-center mt-3">
+								<div className="text-muted">Mostrando {Math.min((currentPage-1)*pageSize+1, totalItems)} - {Math.min(currentPage*pageSize, totalItems)} de {totalItems}</div>
+								<div>
+									<select className="form-select form-select-sm d-inline-block me-2" style={{width:120}} value={pageSize} onChange={e => setPageSize(Number(e.target.value))}>
+										<option value={6}>6 / página</option>
+										<option value={12}>12 / página</option>
+										<option value={24}>24 / página</option>
+										<option value={48}>48 / página</option>
+									</select>
+									<button className="btn btn-sm btn-outline-secondary me-2" disabled={currentPage<=1} onClick={() => setCurrentPage(p => Math.max(1, p-1))}>Anterior</button>
+									<button className="btn btn-sm btn-outline-secondary" disabled={currentPage>=totalPages} onClick={() => setCurrentPage(p => Math.min(totalPages, p+1))}>Siguiente</button>
+								</div>
+							</div>
+						</>
 					)}
 				</div>
 			</main>

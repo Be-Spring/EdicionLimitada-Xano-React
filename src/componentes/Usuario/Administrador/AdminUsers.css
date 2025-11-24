@@ -1,0 +1,6 @@
+/* Admin users table styling: white background, black text to match OrdersTable */
+.admin-users table{width:100%;border-collapse:collapse;color:#000;background:#fff}
+.admin-users thead th{background:#fff;padding:0.75rem;text-align:left;border-bottom:1px solid rgba(0,0,0,0.08)}
+.admin-users tbody td{padding:0.65rem;border-bottom:1px solid rgba(0,0,0,0.06);color:#000}
+.admin-users .btn{padding:0.35rem 0.6rem;border-radius:6px;border:none;cursor:pointer}
+.admin-users .btn-outline-primary{border:1px solid rgba(0,0,0,0.08);color:#000;background:transparent}

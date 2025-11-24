@@ -9,6 +9,10 @@ export default function ProductList({ onEdit = () => {}, onDelete = () => {}, re
   const [loading, setLoading] = useState(false)
   const [designerMap, setDesignerMap] = useState({})
   const [categoryMap, setCategoryMap] = useState({})
+  const [currentPage, setCurrentPage] = useState(1)
+  const [pageSize, setPageSize] = useState(12)
+  const [filterCategory, setFilterCategory] = useState('')
+  const [filterDesigner, setFilterDesigner] = useState('')
 
   useEffect(() => {
     let mounted = true
@@ -55,8 +59,53 @@ export default function ProductList({ onEdit = () => {}, onDelete = () => {}, re
 
   if (loading) return <div>Cargando productos...</div>
 
+  // apply filters
+  const filtered = products.filter(p => {
+    const raw = p.raw || p
+    if (filterCategory) {
+      const cat = raw.categoria ?? p.categoria
+      if (typeof cat === 'object') {
+        if (String(cat.id) !== String(filterCategory)) return false
+      } else {
+        if (String(cat) !== String(filterCategory)) return false
+      }
+    }
+    if (filterDesigner) {
+      const d = raw.disenador ?? p.disenador
+      if (typeof d === 'object') {
+        if (String(d.id) !== String(filterDesigner) && String(d.nombre_disenador || d.name || '') !== String(filterDesigner)) return false
+      } else {
+        if (String(d) !== String(filterDesigner)) return false
+      }
+    }
+    return true
+  })
+
+  const total = filtered.length
+  const totalPages = Math.max(1, Math.ceil(total / pageSize))
+  const paged = filtered.slice((currentPage-1)*pageSize, currentPage*pageSize)
+
   return (
     <div className="admin-product-list">
+      <div className="mb-3">
+        <div className="row g-2">
+          <div className="col-md-3">
+            <select className="form-select" value={filterCategory} onChange={e => { setFilterCategory(e.target.value); setCurrentPage(1) }}>
+              <option value="">Todas las categorías</option>
+              {Object.keys(categoryMap).map(k => <option key={k} value={k}>{categoryMap[k]}</option>)}
+            </select>
+          </div>
+          <div className="col-md-3">
+            <select className="form-select" value={filterDesigner} onChange={e => { setFilterDesigner(e.target.value); setCurrentPage(1) }}>
+              <option value="">Todos los diseñadores</option>
+              {Object.keys(designerMap).map(k => <option key={k} value={k}>{designerMap[k]}</option>)}
+            </select>
+          </div>
+          <div className="col-md-6 d-flex justify-content-end">
+            <button className="btn btn-secondary" onClick={() => { setFilterCategory(''); setFilterDesigner(''); setCurrentPage(1) }}>Limpiar filtros</button>
+          </div>
+        </div>
+      </div>
       <table className="table table-sm">
         <thead>
           <tr>
@@ -70,7 +119,7 @@ export default function ProductList({ onEdit = () => {}, onDelete = () => {}, re
           </tr>
         </thead>
         <tbody>
-          {products.map(p => {
+          {paged.map(p => {
             const raw = p.raw || p
             // normalize images like client ProductCard does
             const sourceImages = Array.isArray(p.images) && p.images.length ? p.images : (Array.isArray(raw.images) ? raw.images : [])
@@ -108,6 +157,18 @@ export default function ProductList({ onEdit = () => {}, onDelete = () => {}, re
           })}
         </tbody>
       </table>
+      <div className="d-flex justify-content-between align-items-center mt-3">
+        <div className="text-muted">Mostrando {Math.min((currentPage-1)*pageSize+1, total)} - {Math.min(currentPage*pageSize, total)} de {total}</div>
+        <div>
+          <select className="form-select form-select-sm d-inline-block me-2" style={{width:120}} value={pageSize} onChange={e => { setPageSize(Number(e.target.value)); setCurrentPage(1) }}>
+            <option value={6}>6 / página</option>
+            <option value={12}>12 / página</option>
+            <option value={24}>24 / página</option>
+          </select>
+          <button className="btn btn-sm btn-outline-secondary me-2" disabled={currentPage<=1} onClick={() => setCurrentPage(p => Math.max(1, p-1))}>Anterior</button>
+          <button className="btn btn-sm btn-outline-secondary" disabled={currentPage>=totalPages} onClick={() => setCurrentPage(p => Math.min(totalPages, p+1))}>Siguiente</button>
+        </div>
+      </div>
     </div>
   )
 }

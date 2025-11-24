@@ -391,3 +391,55 @@ export async function deleteUser(token, userId) {
   }
   return true;
 }
+
+// ------------------------ ORDEN ------------------------
+
+// ------------------------ ÓRDENES ------------------------
+
+// GET /orden  -> devuelve todas las órdenes
+export async function listOrdenes({ token } = {}) {
+  const headers = token ? { Authorization: `Bearer ${token}` } : {};
+
+  const res = await fetch(`${API_BASE}/orden`, {
+    method: 'GET',
+    headers,
+  });
+
+  const data = await res.json().catch(() => null);
+
+  if (!res.ok) {
+    const msg =
+      data?.message || data?.error || `Error cargando órdenes: ${res.status}`;
+    throw new Error(msg);
+  }
+
+  // Xano suele devolver array directamente, o dentro de data/items
+  const arr = Array.isArray(data) ? data : data?.items ?? data?.data ?? [];
+  return arr || [];
+}
+
+// PATCH /orden/{orden_id}  -> actualiza el campo estado
+export async function updateOrdenEstado({ token, ordenId, estado }) {
+  if (!ordenId) throw new Error('ordenId es requerido');
+
+  const headers = {
+    'Content-Type': 'application/json',
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
+
+  const res = await fetch(`${API_BASE}/orden/${ordenId}`, {
+    method: 'PATCH',
+    headers,
+    body: JSON.stringify({ estado }),
+  });
+
+  const data = await res.json().catch(() => null);
+
+  if (!res.ok) {
+    const msg =
+      data?.message || data?.error || `Error actualizando orden: ${res.status}`;
+    throw new Error(msg);
+  }
+
+  return data;
+}

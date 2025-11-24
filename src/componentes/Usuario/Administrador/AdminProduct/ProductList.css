@@ -1,2 +1,10 @@
 .admin-product-list .product-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
 .admin-product-list .card{background:#0f0f0f;border:1px solid rgba(255,255,255,0.03);padding:0;border-radius:8px}
+
+/* Table styles for admin product list (white background, dark text) */
+.admin-product-list table{width:100%;border-collapse:collapse;color:#000;background:#fff}
+.admin-product-list thead th{background:#fff;padding:0.75rem;text-align:left;border-bottom:1px solid rgba(0,0,0,0.08)}
+.admin-product-list tbody td{padding:0.65rem;border-bottom:1px solid rgba(0,0,0,0.06);color:#000}
+.admin-product-list .btn{padding:0.35rem 0.6rem;border-radius:6px;border:none;cursor:pointer}
+.admin-product-list .btn-outline-primary{border:1px solid rgba(0,0,0,0.08);color:#000;background:transparent}
+

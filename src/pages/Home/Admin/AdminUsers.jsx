@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import AdminLayout from '../../../componentes/Usuario/Administrador/AdminLayout/AdminLayout.jsx'
 import { useAuth } from '../../../context/AuthContext.jsx'
+import '../../../componentes/Usuario/Administrador/AdminUsers.css'
 import { listUsers, createUser, updateUser, deleteUser } from '../../../api/xano.js'
 
 export default function AdminUsers(){
@@ -11,6 +12,11 @@ export default function AdminUsers(){
 
 	const [editing, setEditing] = useState(null)
 	const [form, setForm] = useState({ nombre: '', email: '', rol: 'cliente', estado: 'activo', telefono: '', comuna: '', direccion_envio: '' })
+	const [currentPage, setCurrentPage] = useState(1)
+	const [pageSize, setPageSize] = useState(12)
+	const [filterRole, setFilterRole] = useState('')
+	const [filterEstado, setFilterEstado] = useState('')
+	const [confirmUser, setConfirmUser] = useState(null)
 
 	useEffect(() => {
 		let mounted = true
@@ -28,6 +34,21 @@ export default function AdminUsers(){
 		})()
 		return () => { mounted = false }
 	}, [token, refreshFlag])
+
+	// apply filters
+	const filteredUsers = users.filter(u => {
+		if (filterRole) {
+			if ((u.rol || u.role || '') !== filterRole) return false
+		}
+		if (filterEstado) {
+			if ((u.estado || u.status || '') !== filterEstado) return false
+		}
+		return true
+	})
+
+	const total = filteredUsers.length
+	const totalPages = Math.max(1, Math.ceil(total / pageSize))
+	const pagedUsers = filteredUsers.slice((currentPage-1)*pageSize, currentPage*pageSize)
 
 	function handleChange(e){
 		const { name, value } = e.target
@@ -69,14 +90,22 @@ export default function AdminUsers(){
 	}
 
 	async function handleDelete(user){
+		// trigger confirmation modal
 		if (!user?.id) return
-		if (!window.confirm(`Eliminar usuario ${user.email}?`)) return
+		setConfirmUser(user)
+	}
+
+	async function handleDeleteConfirmed(){
+		const user = confirmUser
+		if (!user?.id) return
 		try {
 			await deleteUser(token, user.id)
 			setRefreshFlag(f => f + 1)
+			setConfirmUser(null)
 		} catch (err) {
 			console.error('delete user failed', err)
 			alert(err?.message || 'Error eliminando usuario')
+			setConfirmUser(null)
 		}
 	}
 
@@ -89,6 +118,27 @@ export default function AdminUsers(){
 						<div>Cargando usuarios...</div>
 					) : (
 						<div style={{marginTop: 12}}>
+							<div className="mb-3">
+								<div className="row g-2">
+									<div className="col-md-3">
+										<select className="form-select" value={filterRole} onChange={e => { setFilterRole(e.target.value); setCurrentPage(1) }}>
+											<option value="">Todos los roles</option>
+											<option value="cliente">cliente</option>
+											<option value="administrador">administrador</option>
+										</select>
+									</div>
+									<div className="col-md-3">
+										<select className="form-select" value={filterEstado} onChange={e => { setFilterEstado(e.target.value); setCurrentPage(1) }}>
+											<option value="">Todos los estados</option>
+											<option value="activo">activo</option>
+											<option value="bloqueado">bloqueado</option>
+										</select>
+									</div>
+									<div className="col-md-6 d-flex justify-content-end">
+										<button className="btn btn-secondary" onClick={() => { setFilterRole(''); setFilterEstado(''); setCurrentPage(1) }}>Limpiar filtros</button>
+									</div>
+								</div>
+							</div>
 							<table className="table table-sm">
 								<thead>
 									<tr>
@@ -106,7 +156,7 @@ export default function AdminUsers(){
 									{users.length === 0 && (
 										<tr><td colSpan={8}>No hay usuarios.</td></tr>
 									)}
-									{users.map(u => (
+									{pagedUsers.map(u => (
 										<tr key={u.id}>
 											<td>{u.nombre}</td>
 											<td>{u.email}</td>
@@ -117,12 +167,26 @@ export default function AdminUsers(){
 											<td style={{maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis'}}>{u.direccion_envio}</td>
 											<td>
 												<button className="btn btn-sm btn-outline-primary me-2" onClick={() => handleEdit(u)}>Editar</button>
-												<button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(u)}>Eliminar</button>
+												{String((u.rol || u.role || '')).toLowerCase() !== 'administrador' && (
+													<button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(u)}>Eliminar</button>
+												)}
 											</td>
 										</tr>
 									))}
 								</tbody>
 							</table>
+								<div className="d-flex justify-content-between align-items-center mt-3">
+									<div className="text-muted">Mostrando {Math.min((currentPage-1)*pageSize+1, total)} - {Math.min(currentPage*pageSize, total)} de {total}</div>
+									<div>
+										<select className="form-select form-select-sm d-inline-block me-2" style={{width:120}} value={pageSize} onChange={e => { setPageSize(Number(e.target.value)); setCurrentPage(1) }}>
+											<option value={6}>6 / página</option>
+											<option value={12}>12 / página</option>
+											<option value={24}>24 / página</option>
+										</select>
+										<button className="btn btn-sm btn-outline-secondary me-2" disabled={currentPage<=1} onClick={() => setCurrentPage(p => Math.max(1, p-1))}>Anterior</button>
+										<button className="btn btn-sm btn-outline-secondary" disabled={currentPage>=totalPages} onClick={() => setCurrentPage(p => Math.min(totalPages, p+1))}>Siguiente</button>
+									</div>
+								</div>
 						</div>
 					)}
 				</div>
@@ -172,6 +236,20 @@ export default function AdminUsers(){
 							</div>
 						</form>
 					</div>
+
+					{/* Confirmation modal for deleting user */}
+					{confirmUser && (
+						<div className="modal-backdrop" style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.4)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:1050}}>
+							<div className="card p-3" style={{width:420}}>
+								<h5 className="mb-2">Confirmar eliminación</h5>
+								<p>¿Desea eliminar al usuario <strong>{confirmUser.nombre || confirmUser.name || ''}</strong> con email <strong>{confirmUser.email}</strong>?</p>
+								<div className="d-flex justify-content-end" style={{gap:8}}>
+									<button className="btn btn-secondary" onClick={() => setConfirmUser(null)}>Cancelar</button>
+									<button className="btn btn-danger" onClick={() => handleDeleteConfirmed()}>Eliminar</button>
+								</div>
+							</div>
+						</div>
+					)}
 				</div>
 			</div>
 		</AdminLayout>

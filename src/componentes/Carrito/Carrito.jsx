@@ -2,98 +2,64 @@ import React, { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { CartContext } from '../../context/CartContext.jsx'
 import { useAuth } from '../../context/AuthContext.jsx'
-import { createOrden, updateUser } from '../../api/xano.js'
+import { createOrden } from '../../api/xano.js'
 import './Carrito.css'
 
 export default function Carrito() {
-  const navigate = useNavigate()
-  const { items, total, removeFromCart, updateQuantity, clearCart, isOpen, closeCart } = useContext(CartContext)
+  const { items, total, removeFromCart, updateQuantity, clearCart, isOpen, closeCart } =
+    useContext(CartContext)
+
   const { user, token } = useAuth()
+  const navigate = useNavigate()
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
-  const [needsAddress, setNeedsAddress] = useState(false)
-  const [direccion, setDireccion] = useState('')
+  const [showSuccess, setShowSuccess] = useState(false)
 
-  // Paso 1: click en "Pagar carrito"
-  async function handleStartCheckout() {
+  async function handleCheckout() {
     setError(null)
 
-    // Sin sesión → mandamos a login de cliente
+    if (!items.length) return
+
+    // Si no hay sesión → enviar a login de cliente
     if (!user || !token) {
       closeCart()
       navigate('/sesion')
       return
     }
 
-    // Si no tiene dirección guardada, pedimos que la ingrese
-    if (!user.direccion_envio && !needsAddress) {
-      setNeedsAddress(true)
-      return
-    }
-
-    // Si ya tiene dirección → enviar orden directamente
-    await handleConfirmCheckout()
-  }
-
-  // Paso 2: confirmar (y opcionalmente guardar dirección) + crear orden
-  async function handleConfirmCheckout() {
-    setError(null)
-
-    if (!user || !token) {
-      closeCart()
-      navigate('/sesion')
-      return
-    }
-
-    if (items.length === 0) {
-      setError('Tu carrito está vacío.')
-      return
-    }
-
+    setLoading(true)
     try {
-      setLoading(true)
-
-      // Si estamos pidiendo dirección y el usuario escribió algo, actualizamos en la BD
-      if (needsAddress && direccion.trim()) {
-        await updateUser({
-          token,
-          userId: user.id,
-          patch: { direccion_envio: direccion.trim() },
-        })
-        // Nota: el AuthContext no expone setUser, así que el cambio se verá
-        // al recargar o cuando en el futuro llamemos de nuevo a authMe().
-      }
-
-      // Creamos la orden PENDIENTE
-      await createOrden({
+      // Crear orden en Xano con estado "pendiente"
+      const orden = await createOrden({
         token,
         userId: user.id,
         total,
-        estado: 'pendiente',
       })
 
       clearCart()
-      setNeedsAddress(false)
-      setDireccion('')
-      closeCart()
-      alert('Tu pedido fue registrado. Estado: pendiente de aprobación.')
+      setShowSuccess(true) // mostrar modal "Pago aceptado"
+      console.debug('Orden creada:', orden)
     } catch (e) {
-      setError(e?.message || 'Error al procesar el pago.')
+      setError(e?.message || 'No se pudo registrar el pago.')
     } finally {
       setLoading(false)
     }
   }
 
-  const formattedTotal = new Intl.NumberFormat('es-CL', {
-    style: 'currency',
-    currency: 'CLP'
-  }).format(total)
+  function handleCloseSuccess() {
+    setShowSuccess(false)
+    closeCart()
+  }
 
   return (
     <>
+      {/* Overlay del carrito */}
       <div className={`cart-overlay ${isOpen ? 'show' : ''}`} onClick={closeCart} />
-      <aside className={`cart-drawer bg-dark text-white ${isOpen ? 'open' : ''}`} aria-hidden={!isOpen}>
+      <aside
+        className={`cart-drawer bg-dark text-white ${isOpen ? 'open' : ''}`}
+        aria-hidden={!isOpen}
+      >
         <div className="cart-header border-bottom border-secondary px-3 py-3 d-flex justify-content-between align-items-center">
           <h5 className="michroma-regular mb-0">
             <i className="fas fa-shopping-cart me-2" /> Tu carrito
@@ -120,7 +86,12 @@ export default function Carrito() {
                     <img
                       src={it.product.image}
                       alt={it.product.name}
-                      style={{ width: 56, height: 56, objectFit: 'cover', borderRadius: 6 }}
+                      style={{
+                        width: 56,
+                        height: 56,
+                        objectFit: 'cover',
+                        borderRadius: 6,
+                      }}
                     />
                     <div>
                       <div className="fw-bold">{it.product.name}</div>
@@ -128,7 +99,7 @@ export default function Carrito() {
                       <div className="text-light small">
                         {new Intl.NumberFormat('es-CL', {
                           style: 'currency',
-                          currency: 'CLP'
+                          currency: 'CLP',
                         }).format(it.product.price)}
                       </div>
                     </div>
@@ -155,49 +126,29 @@ export default function Carrito() {
               ))}
             </ul>
           )}
+
+          {error && (
+            <div className="alert alert-danger mt-3 py-2">{error}</div>
+          )}
         </div>
 
         <div className="cart-footer px-3 pb-3">
           <div className="d-flex justify-content-between align-items-center border-top border-secondary pt-3">
             <span className="text-muted">Total</span>
-            <strong id="cartTotal">{formattedTotal}</strong>
+            <strong id="cartTotal">
+              {new Intl.NumberFormat('es-CL', {
+                style: 'currency',
+                currency: 'CLP',
+              }).format(total)}
+            </strong>
           </div>
-
-          {/* Si falta dirección, mostramos campo para capturarla */}
-          {needsAddress && (
-            <div className="mt-3">
-              <label className="form-label">Dirección de envío</label>
-              <textarea
-                className="form-control form-control-sm"
-                rows={2}
-                value={direccion}
-                onChange={(e) => setDireccion(e.target.value)}
-                placeholder="Ingresa tu dirección de envío"
-              />
-              <small className="text-muted">
-                Guardaremos esta dirección en tu perfil.
-              </small>
-            </div>
-          )}
-
-          {error && (
-            <div className="alert alert-danger mt-3 py-2">
-              {error}
-            </div>
-          )}
-
           <button
             className="btn btn-light w-100 mt-3"
             disabled={items.length === 0 || loading}
-            onClick={needsAddress ? handleConfirmCheckout : handleStartCheckout}
+            onClick={handleCheckout}
           >
-            {loading
-              ? 'Procesando...'
-              : needsAddress
-              ? 'Confirmar pago'
-              : 'Pagar carrito'}
+            {loading ? 'Confirmando...' : 'Confirmar pago'}
           </button>
-
           <button
             className="btn btn-outline-light w-100 mt-2"
             onClick={clearCart}
@@ -207,11 +158,39 @@ export default function Carrito() {
           </button>
         </div>
       </aside>
+
+      {/* Modal de éxito: pago aceptado */}
+      {showSuccess && (
+        <div className="cart-overlay show">
+          <div
+            className="card bg-light"
+            style={{
+              position: 'fixed',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              zIndex: 1100,
+              maxWidth: 320,
+              width: '90%',
+            }}
+          >
+            <div className="card-body text-center">
+              <h5 className="card-title mb-3">Pago aceptado</h5>
+              <p className="card-text">
+                Tu pago ha sido registrado como <strong>pendiente</strong>. Un administrador
+                revisará tu orden.
+              </p>
+              <button className="btn btn-dark mt-2" onClick={handleCloseSuccess}>
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   )
 }
 
-// CardBase se mantiene igual
 export const CardBase = ({ image, title, subtitle, onClick, children }) => {
   return (
     <div className="product-card-zoom">

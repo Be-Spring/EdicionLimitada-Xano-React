@@ -11,3 +11,9 @@
 .topbar-right{display:flex;gap:0.5rem}
 .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:#fff;padding:0.4rem 0.6rem;border-radius:6px;cursor:pointer}
 .btn-ghost:hover{background:rgba(255,255,255,0.02)}
+.michroma-regular {
+    font-family: "Michroma", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    letter-spacing: 1px;
+}

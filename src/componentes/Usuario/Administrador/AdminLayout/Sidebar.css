@@ -32,3 +32,9 @@
 .user-name{font-size:0.9rem}
 .btn-logout{width:100%;background:#222;border:none;color:#fff;padding:0.5rem 0;border-radius:6px;cursor:pointer}
 .btn-logout:hover{background:#2a2a2a}
+
+.navbar-logo {
+	height: 40px;
+	width: auto;
+	margin-right: 1rem;
+}

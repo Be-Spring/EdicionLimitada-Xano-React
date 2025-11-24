@@ -1,7 +1,8 @@
 import React from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavLink, Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../../../context/AuthContext'
 import './Sidebar.css'
+import logoImg from '../../../../assets/img/Logo Edicion Limitada.png'
 
 export default function Sidebar() {
   const { logout, user } = useAuth()
@@ -15,9 +16,14 @@ export default function Sidebar() {
   return (
     <aside className="admin-sidebar">
       <div className="admin-brand">
-        <div className="brand-logo">EL</div>
-        <div className="brand-title">ADMIN PANEL</div>
+        <Link to="/administrador" className="text-decoration-none">
+            <div className="logo-container d-flex align-items-center">
+              <img src={logoImg} alt="Logo Edición Limitada" className="navbar-logo me-2" />
+              <span className="michroma-regular brand-title">Administrador</span>
+            </div>
+        </Link>
       </div>
+
 
       <nav className="admin-nav">
         <NavLink to="/administrador" end className={({isActive}) => isActive ? 'nav-item active' : 'nav-item'}>

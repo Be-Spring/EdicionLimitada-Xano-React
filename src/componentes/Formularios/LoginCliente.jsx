@@ -4,6 +4,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import './Login.css'
 
+import { useEffect } from 'react'
+
 export default function InicioSesionCliente() {
   const navigate = useNavigate()
   const { loginCliente } = useAuth()
@@ -13,6 +15,12 @@ export default function InicioSesionCliente() {
   const [remember, setRemember] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+
+  useEffect(() => {
+    // ensure inputs start empty (avoid stale values)
+    setEmail('')
+    setPassword('')
+  }, [])
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -47,16 +55,16 @@ export default function InicioSesionCliente() {
                 </div>
               )}
 
-              <form id="loginForm" className="needs-validation" onSubmit={handleSubmit} noValidate>
+              <form id="loginForm" className="needs-validation" onSubmit={handleSubmit} noValidate autoComplete="off">
                 <div className="mb-3">
                   <label htmlFor="email" className="form-label michroma-regular">Correo electrónico</label>
-                  <input type="email" className="form-control rounded-3" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" />
+                  <input name="cliente-email" type="email" className="form-control rounded-3" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="off" />
                   <div className="invalid-feedback">Por favor ingresa tu correo electrónico</div>
                 </div>
 
                 <div className="mb-4">
                   <label htmlFor="password" className="form-label michroma-regular">Contraseña</label>
-                  <input type="password" className="form-control rounded-3" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password" />
+                  <input name="cliente-password" type="password" className="form-control rounded-3" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required autoComplete="off" />
                   <div className="invalid-feedback">Por favor ingresa tu contraseña</div>
                 </div>
 

@@ -2,7 +2,11 @@
 body {
     background-color: #000000;
     color: #ffffff;
-    padding-top: 76px;
+    padding-top: 20px;
+    /* Montserrat - default body font for non-title text */
+    font-family: "Montserrat", sans-serif;
+    font-weight: 400;
+    font-optical-sizing: auto;
 }
 
 /* Utility: force true black background */
@@ -16,6 +20,16 @@ body {
     font-style: normal;
     letter-spacing: 1px;
 }
+
+/* Utility class for Montserrat variants */
+.montserrat {
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
+}
+
+.montserrat-400 { font-weight: 400; }
+.montserrat-600 { font-weight: 600; }
+.montserrat-700 { font-weight: 700; }
 
 /* Index-specific styles (navbar, hero, products, footer logo, etc.) were moved
    to `src/componentes/Index/Header.css`, `Hero.css`, `New.css` and `Footer.css`.

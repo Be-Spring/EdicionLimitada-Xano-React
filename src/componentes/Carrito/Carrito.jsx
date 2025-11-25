@@ -1,3 +1,4 @@
+// src/componentes/Carrito/Carrito.jsx
 import React, { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { CartContext } from '../../context/CartContext.jsx'
@@ -6,60 +7,55 @@ import { createOrden } from '../../api/xano.js'
 import './Carrito.css'
 
 export default function Carrito() {
-  const { items, total, removeFromCart, updateQuantity, clearCart, isOpen, closeCart } =
-    useContext(CartContext)
-
+  const { items, total, removeFromCart, updateQuantity, clearCart, isOpen, closeCart } = useContext(CartContext)
   const { user, token } = useAuth()
   const navigate = useNavigate()
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
-  const [showSuccess, setShowSuccess] = useState(false)
 
-  async function handleCheckout() {
+  async function handleConfirmPayment() {
     setError(null)
 
-    if (!items.length) return
-
-    // Si no hay sesión → enviar a login de cliente
+    // 1) Si NO hay sesión → cerrar carrito y llevar a login
     if (!user || !token) {
       closeCart()
       navigate('/sesion')
       return
     }
 
+    // 2) Si el carrito está vacío, no hacemos nada
+    if (!items.length || total <= 0) {
+      setError('Tu carrito está vacío.')
+      return
+    }
+
     setLoading(true)
     try {
-      // Crear orden en Xano con estado "pendiente"
+      // 3) Crear orden en Xano
       const orden = await createOrden({
         token,
         userId: user.id,
         total,
+        estado: 'pendiente', // como definiste en la tabla
       })
 
+      // 4) Vaciar carrito y mostrar mensaje
       clearCart()
-      setShowSuccess(true) // mostrar modal "Pago aceptado"
-      console.debug('Orden creada:', orden)
+      alert(`Pago aceptado (simulado). Orden creada #${orden?.id ?? ''}`)
+      closeCart()
     } catch (e) {
+      console.error('Error creando orden', e)
       setError(e?.message || 'No se pudo registrar el pago.')
     } finally {
       setLoading(false)
     }
   }
 
-  function handleCloseSuccess() {
-    setShowSuccess(false)
-    closeCart()
-  }
-
   return (
     <>
-      {/* Overlay del carrito */}
       <div className={`cart-overlay ${isOpen ? 'show' : ''}`} onClick={closeCart} />
-      <aside
-        className={`cart-drawer bg-dark text-white ${isOpen ? 'open' : ''}`}
-        aria-hidden={!isOpen}
-      >
+      <aside className={`cart-drawer bg-dark text-white ${isOpen ? 'open' : ''}`} aria-hidden={!isOpen}>
         <div className="cart-header border-bottom border-secondary px-3 py-3 d-flex justify-content-between align-items-center">
           <h5 className="michroma-regular mb-0">
             <i className="fas fa-shopping-cart me-2" /> Tu carrito
@@ -73,6 +69,12 @@ export default function Carrito() {
         </div>
 
         <div className="cart-body px-3 py-3">
+          {error && (
+            <div className="alert alert-danger py-2" role="alert">
+              {error}
+            </div>
+          )}
+
           {items.length === 0 ? (
             <div className="text-muted">Tu carrito está vacío</div>
           ) : (
@@ -126,10 +128,6 @@ export default function Carrito() {
               ))}
             </ul>
           )}
-
-          {error && (
-            <div className="alert alert-danger mt-3 py-2">{error}</div>
-          )}
         </div>
 
         <div className="cart-footer px-3 pb-3">
@@ -142,13 +140,15 @@ export default function Carrito() {
               }).format(total)}
             </strong>
           </div>
+
           <button
             className="btn btn-light w-100 mt-3"
             disabled={items.length === 0 || loading}
-            onClick={handleCheckout}
+            onClick={handleConfirmPayment}
           >
-            {loading ? 'Confirmando...' : 'Confirmar pago'}
+            {loading ? 'Procesando...' : 'Confirmar pago (simulado)'}
           </button>
+
           <button
             className="btn btn-outline-light w-100 mt-2"
             onClick={clearCart}
@@ -158,39 +158,11 @@ export default function Carrito() {
           </button>
         </div>
       </aside>
-
-      {/* Modal de éxito: pago aceptado */}
-      {showSuccess && (
-        <div className="cart-overlay show">
-          <div
-            className="card bg-light"
-            style={{
-              position: 'fixed',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              zIndex: 1100,
-              maxWidth: 320,
-              width: '90%',
-            }}
-          >
-            <div className="card-body text-center">
-              <h5 className="card-title mb-3">Pago aceptado</h5>
-              <p className="card-text">
-                Tu pago ha sido registrado como <strong>pendiente</strong>. Un administrador
-                revisará tu orden.
-              </p>
-              <button className="btn btn-dark mt-2" onClick={handleCloseSuccess}>
-                Cerrar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   )
 }
 
+// CardBase lo dejo igual que lo tenías
 export const CardBase = ({ image, title, subtitle, onClick, children }) => {
   return (
     <div className="product-card-zoom">

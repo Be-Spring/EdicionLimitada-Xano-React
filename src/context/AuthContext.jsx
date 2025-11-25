@@ -105,9 +105,10 @@ export function AuthProvider({ children }) {
   function logout() {
     setToken('');
     setUser(null);
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('auth_user');
-    sessionStorage.removeItem('auth_token');
+    try { localStorage.removeItem('auth_token'); } catch {}
+    try { localStorage.removeItem('auth_user'); } catch {}
+    try { sessionStorage.removeItem('auth_token'); } catch {}
+    try { sessionStorage.removeItem('auth_user'); } catch {}
   }
 
   // ---------- REFRESH USER ----------

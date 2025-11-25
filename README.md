@@ -4,76 +4,108 @@ Pequeño proyecto React creado con Vite. Este README explica cómo ejecutar el p
 
 ## Requisitos
 - Node.js (v18+ recomendado)
-- npm (v9+)
+# Edición Limitada (React + Vite)
 
-## Comandos (PowerShell)
-Abre PowerShell en la carpeta raíz del proyecto y ejecuta:
+**Descripción General**
+- **Proyecto**: Frontend React creado con Vite para la tienda "Edición Limitada". Implementa páginas públicas, autenticación con Xano, área de administración (productos, diseñadores, usuarios, órdenes) y un flujo básico de carrito.
+- **Estructura**: código principal en `src/` (componentes en `src/componentes/`, páginas en `src/pages/`, helpers API en `src/api/xano.js`, contexto de autenticación en `src/context/AuthContext.jsx`).
+
+**Requisitos**
+- **Node.js**: v18+ recomendado.
+- **npm**: v9+.
+
+**Instalación y ejecución (PowerShell)**
+- Abre PowerShell en la carpeta del proyecto y ejecuta:
 
 ```powershell
 npm install
 npm run dev
 ```
 
-Si `npm` lanza un error relacionado con `npm.ps1` en PowerShell, usa `npm.cmd` en su lugar:
+- Si PowerShell lanza errores con `npm` (política de ejecución), usa `npm.cmd`:
 
 ```powershell
 npm.cmd install
 npm.cmd run dev
 ```
 
-Vite te mostrará la URL local (por defecto `http://localhost:5173/`, si ese puerto está en uso puede cambiar a `5174` u otro).
+- Vite mostrará la URL local (por defecto `http://localhost:5173/`).
 
-## Qué cambié / añadí
-- Envolví la app en `BrowserRouter` y configuré rutas (SPA):
-  - `src/main.jsx` — ahora importa `BrowserRouter`.
-  - `src/App.jsx` — ahora usa `Routes` / `Route` y mantiene el estado global mínimo y el modal.
-- Páginas creadas en `src/pages/`:
-  - `Home.jsx` (Hero + ProductsSection + FormularioContacto)
-  - `ProductsPage.jsx` (muestra `ProductGridFetch`)
-  - `DesignersPage.jsx` (placeholder para diseñadores)
-- Componentes añadidos/ajustados en `src/componentes/`:
-  - `ProductCard.jsx`, `ProductGridFetch.jsx`, `ProductModal.jsx` (modal controlado por React)
-  - `Header.jsx` actualizado para usar `Link`/`NavLink` de `react-router-dom`
-  - `Products/ProductsSection.jsx` y `Products/ProductModal.jsx` (modularizado)
-  - `FormularioContacto.jsx` ya incluido como componente reutilizable
-- Se estandarizaron exportaciones (se añadieron `export default` donde era práctico) para evitar errores de importación en tiempo de ejecución.
-- Apliqué correcciones temporales y luego las revertí; también añadí overrides seguros en CSS para evitar overlays por defecto que oculten la UI.
+**Variables de entorno**
+- Define en `.env` o en tu entorno:
+  - `VITE_XANO_AUTH_BASE` — Base URL del grupo Auth de Xano (ejemplo: `https://x8ki-letl-twmt.n7.xano.io/api:YNCB1DWl`).
+  - `VITE_XANO_STORE_BASE` — Base URL del grupo de API de tienda (productos, usuarios, etc.).
 
-## Cómo probar rápidamente
-1. Arranca el dev server (`npm run dev`).
-2. Abre `http://localhost:5173/` (o el puerto que indique Vite).
-3. Navega por las rutas (en el header):
-   - `/` → Home
-   - `/productos` → lista de productos (demo con items de ejemplo)
-   - `/disenadores` → página de diseñadores (placeholder)
-4. En la página de productos haz click en una tarjeta para abrir el modal.
+**Detalle del backend**
+- **Proveedor**: Xano (API REST). El proyecto usa endpoints públicos y de auth expuestos por un workspace de Xano.
+- **Base (ejemplo)**: `https://x8ki-letl-twmt.n7.xano.io/api:YNCB1DWl`
+- **Notas**: El frontend intenta primero los endpoints de autenticación del grupo `auth` (`/auth/signup`, `/auth/login`, `/auth/login_cliente`) y, si no están disponibles, cae en endpoints CRUD genéricos (`/user`) como fallback.
 
-## Troubleshooting
-- Si la página aparece en blanco: abre DevTools (F12) y mira la consola para errores JS. Copia cualquier error y pégalo en la conversación.
-- Si ves problemas con `npm` en PowerShell: usa `npm.cmd` como se indica arriba.
-- Si el modal no abre: confirma que no haya overlays invisibles (en `src/App.css` hay overrides seguros para `.sidebar-overlay` y `.toast-container`).
+**Usuarios de prueba (credenciales dummy)**
+- **Administrador (ejemplo)**:
+  - **Email**: `admin@example.com`
+  - **Password**: `AdminPass123!`
+  - **Nota**: Asegúrate de crear este usuario en Xano dentro del grupo Auth con rol `administrador` o en la tabla `user` + asignar rol/credenciales.
+- **Cliente (ejemplo)**:
+  - **Email**: `cliente@example.com`
+  - **Password**: `ClientPass123!`
+  - **Nota**: El endpoint de `signup` guarda credenciales; si tu Xano no expone `/auth/signup`, crear el usuario en `/user` puede no generar contraseña usable — ver sección Backend.
 
-## Siguientes pasos sugeridos
-- Implementar estado de carrito en contexto y mostrar contador en el Header.
-- Poblar `DesignersPage` con datos reales o crear fichas desde `src/componentes/Designers/`.
-- Añadir tests unitarios básicos para componentes críticos.
+**Rutas (frontend)**
+- **Públicas**:
+  - `/` — Home
+  - `/productos` — Lista de productos
+  - `/contacto` — Formulario de contacto
+  - `/sesion` — Login cliente
+  - `/sesion-admin` — Login admin
+  - `/registro` — Formulario de registro
+  - `/blog/editorial`, `/blog/eventos` — Secciones de blog
+  - `/nosotros/edicion-limitada`, `/nosotros/disenadores`
+  - `/perfil/datos-personales` — Página para ver/editar datos del cliente (requiere login)
 
-Si quieres, hago el commit por ti con estos cambios y preparo un branch listo para revisión. Actualmente voy a crear un commit "limpio" con los cambios aplicados.
-# React + Vite
+- **Área de administración (requiere login)**:
+  - `/administrador` — Dashboard admin
+  - `/administrador/productos`
+  - `/administrador/usuarios`
+  - `/administrador/ordenes`
+  - `/administrador/disenadores`
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Endpoints (backend Xano used by the frontend)**
+- **Auth** (grupo `auth` en Xano):
+  - `POST /auth/signup` — Registrar usuario (se envía `name`, `email`, `password`, `password_confirmation`).
+  - `POST /auth/login` o `POST /auth/login_cliente` — Login (acepta `email` o `identifier` según configuración).
+  - `GET /auth/me` — Obtener usuario actual a partir del token.
 
-Currently, two official plugins are available:
+- **Store / CRUD** (grupo API principal):
+  - `GET /producto` — Listar productos
+  - `POST /producto` — Crear producto
+  - `PATCH /producto/:id` — Actualizar producto (se usa para adjuntar imágenes)
+  - `GET /disenador`, `POST /disenador`, `PATCH /disenador/:id`, `DELETE /disenador/:id`
+  - `GET /categoria` — Listar categorías
+  - `GET /user`, `POST /user`, `PUT /user/:id`, `DELETE /user/:id` — CRUD usuarios (nota: en algunos Xano la tabla `user` es solo datos, no credenciales)
+  - `POST /upload/image` — Subir imágenes (se suben primero y luego se adjuntan con `PATCH /producto/:id` o `PATCH /disenador/:id`)
+  - `GET /orden` — Listado de órdenes
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+**Comportamiento importante**
+- El frontend guarda el token en `localStorage` con la clave `auth_token` y el usuario en `auth_user`.
+- El helper central `src/api/xano.js` normaliza respuestas (token, usuario, subida de imágenes) y contiene adaptadores para distintos formatos de Xano.
+- En registro/login el código prueba varias combinaciones (p. ej. `identifier` vs `email`) para adaptarse a diferentes configuraciones de Xano.
 
-## React Compiler
+**Pruebas rápidas y verificación**
+- 1) Arranca el dev server: `npm run dev`.
+- 2) Ve a `http://localhost:5173/registro` y crea un usuario de prueba.
+- 3) Inicia sesión en `/sesion` con las credenciales usadas.
+- 4) En Admin: entra a `/sesion-admin` con credenciales de admin.
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+**Problemas comunes**
+- `404 /auth/signup` o `Unable to locate request.`: tu workspace de Xano no tiene ese endpoint. Solución: crea un endpoint `POST /auth/signup` en el API group Auth que use la función "Create User" de Xano.
+- Usuario creado en `/user` pero sin contraseña usable: significa que la creación fue en la tabla `user` directamente y no en el Auth system — debes crear el usuario a través del flujo de Auth de Xano para que tenga credenciales.
+- `Invalid password syntax.`: añade validación en el formulario o ajusta la contraseña para cumplir reglas (mayúscula, número, símbolo, longitud mínima) según la configuración de tu Xano.
 
-Note: This will impact Vite dev & build performances.
+**Contribuir / Desarrollo**
+- Si vas a modificar el backend en Xano, actualiza `VITE_XANO_AUTH_BASE` y `VITE_XANO_STORE_BASE` en tu entorno.
+- Si quieres que haga el commit y abra un branch con cambios limpios, indícame el nombre del branch y lo preparo.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Si necesitas que adapte el README con credenciales concretas o un listado más detallado de endpoints (por ejemplo con ejemplos de request/response), dímelo y lo completo.

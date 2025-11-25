@@ -1,9 +1,12 @@
 .admin-topbar{
-  height:64px;
+  /* match the visual height of Sidebar .admin-brand (padding 0.75rem + logo 36px = 60px) */
+  height: 80px;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding:0 1.25rem;
+  /* use same left/right horizontal padding as sidebar .admin-brand (1rem) for visual alignment */
+  padding: 16px;
+  padding-top: 20px;
   border-bottom:1px solid rgba(255,255,255,0.03);
   background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0));
 }
@@ -16,4 +19,17 @@
     font-weight: 400;
     font-style: normal;
     letter-spacing: 1px;
+}
+
+/* removed visual nudge (transform). Alignment handled via layout padding in AdminLayout.css */
+.topbar-left .michroma-regular{display:inline-block}
+
+/* Sidebar toggle button */
+#sidebarToggle{
+  background:transparent;border:none;color:#fff;font-size:1.1rem;padding:6px 8px;border-radius:6px;cursor:pointer
+}
+
+@media(min-width:768px){
+  /* hide hamburger on desktop */
+  #sidebarToggle{display:none}
 }

@@ -6,6 +6,7 @@
   display: flex;
   flex-direction: column;
   padding: 1rem 0;
+  transition: transform 0.25s ease-in-out, visibility 0.25s;
 }
 
 .admin-brand {
@@ -37,4 +38,10 @@
 	height: 40px;
 	width: auto;
 	margin-right: 1rem;
+}
+
+/* Collapsible behavior for mobile */
+@media (max-width: 767px) {
+  .admin-sidebar { position: fixed; top: 0; left: 0; height: 100vh; transform: translateX(-110%); z-index: 1040; }
+  .admin-sidebar.show { transform: translateX(0); box-shadow: 4px 0 16px rgba(0,0,0,0.4); }
 }

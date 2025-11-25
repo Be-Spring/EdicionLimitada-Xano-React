@@ -4,7 +4,7 @@ import { useAuth } from '../../../../context/AuthContext'
 import './Sidebar.css'
 import logoImg from '../../../../assets/img/Logo Edicion Limitada.png'
 
-export default function Sidebar() {
+export default function Sidebar({ isOpen = true }) {
   const { logout, user } = useAuth()
   const navigate = useNavigate()
 
@@ -14,7 +14,7 @@ export default function Sidebar() {
   }
 
   return (
-    <aside className="admin-sidebar">
+    <aside className={`admin-sidebar ${isOpen ? 'show' : ''}`}>
       <div className="admin-brand">
         <Link to="/administrador" className="text-decoration-none">
             <div className="logo-container d-flex align-items-center">

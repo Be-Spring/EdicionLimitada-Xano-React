@@ -154,10 +154,39 @@ export async function createProduct(token, payload) {
     'Content-Type': 'application/json',
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
+
+  // sanitize payload: remove empty strings, coerce numeric fields to numbers
+  const bodyToSend = { ...payload };
+  // remove client-only keys
+  delete bodyToSend.images;
+  delete bodyToSend.keepImages;
+
+  // normalize numeric fields
+  const toInt = (v) => {
+    if (v === undefined || v === null || v === '') return undefined;
+    const n = Number(v);
+    return Number.isFinite(n) ? (Math.trunc(n)) : undefined;
+  };
+  if ('valor_producto' in bodyToSend) bodyToSend.valor_producto = toInt(bodyToSend.valor_producto);
+  if ('stock' in bodyToSend) bodyToSend.stock = toInt(bodyToSend.stock);
+  if ('categoria' in bodyToSend) {
+    const c = toInt(bodyToSend.categoria);
+    if (c === undefined) delete bodyToSend.categoria; else bodyToSend.categoria = c;
+  }
+  if ('disenador' in bodyToSend) {
+    const d = toInt(bodyToSend.disenador);
+    if (d === undefined) delete bodyToSend.disenador; else bodyToSend.disenador = d;
+  }
+
+  // remove any empty-string fields
+  Object.keys(bodyToSend).forEach((k) => {
+    if (bodyToSend[k] === '') delete bodyToSend[k];
+  });
+
   const res = await fetch(`${API_BASE}/producto`, {
     method: 'POST',
     headers,
-    body: JSON.stringify({ ...payload, images: [] }),
+    body: JSON.stringify(bodyToSend),
   });
   const data = await res.json().catch(() => null);
   if (!res.ok) throw new Error(data?.message || `Error creando producto: ${res.status}`);
@@ -177,9 +206,21 @@ export async function uploadImages(token, files = []) {
     });
     const d = await r.json().catch(() => null);
     if (!r.ok) throw new Error(d?.message || `Error subiendo imagen: ${r.status}`);
-    if (Array.isArray(d)) return d[0] ?? null;
-    if (d?.data && Array.isArray(d.data)) return d.data[0] ?? null;
-    return d;
+    // Normalize different Xano upload shapes into a consistent object with `path`
+    let item = null;
+    if (Array.isArray(d) && d.length) item = d[0];
+    else if (d && d.data && Array.isArray(d.data) && d.data.length) item = d.data[0];
+    else item = d;
+
+    if (!item) return null;
+    // If server returned a plain string (path/url)
+    if (typeof item === 'string') return { path: item };
+    // Common variants: `path`, `url`, `file_path`
+    if (item.path) return item;
+    if (item.url) return { ...item, path: item.url };
+    if (item.file_path) return { ...item, path: item.file_path };
+    // If the server nested the object under `data` or similar, keep what we have
+    return item;
   });
   const results = await Promise.all(uploads);
   return results.filter(Boolean);
@@ -247,7 +288,8 @@ export async function listDesigners({ token } = {}) {
 
 export async function createDesigner(token, payload = {}) {
   const headers = { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) };
-  const body = { nombre_disenador: payload.nombre_disenador || payload.name || '' , images: [] };
+  // send only name on create; images will be attached afterwards if any
+  const body = { nombre_disenador: payload.nombre_disenador || payload.name || '' };
   const res = await fetch(`${API_BASE}/disenador`, { method: 'POST', headers, body: JSON.stringify(body) });
   const data = await res.json().catch(() => null);
   if (!res.ok) throw new Error(data?.message || `Error creando diseñador: ${res.status}`);
@@ -264,9 +306,10 @@ export async function createDesigner(token, payload = {}) {
       if (im.url) return { path: im.url, type: im.type || 'image', meta: im.meta || {} };
       return null; // ensure we don't pass objects without path/url
     })
-    .filter(it => it && it.path)
+    .filter(it => it && it.path);
   if (finalImages.length) {
-    const imagesPayload = finalImages.length === 1 ? finalImages[0] : finalImages
+    // Always send an array for images (backend usually expects an array)
+    const imagesPayload = finalImages;
     const patchRes = await fetch(`${API_BASE}/disenador/${created.id}`, { method: 'PATCH', headers, body: JSON.stringify({ images: imagesPayload }) });
     const patched = await patchRes.json().catch(() => null);
     if (!patchRes.ok) throw new Error(patched?.message || `Error attach diseñador images: ${patchRes.status}`);
@@ -293,7 +336,7 @@ export async function updateDesigner(token, designerId, payload = {}) {
     return im;
   }).filter(Boolean);
   if (finalImages.length) {
-    const imagesPayload = finalImages.length === 1 ? finalImages[0] : finalImages
+    const imagesPayload = finalImages;
     const patchRes = await fetch(`${API_BASE}/disenador/${designerId}`, { method: 'PATCH', headers, body: JSON.stringify({ images: imagesPayload }) });
     const patched = await patchRes.json().catch(() => null);
     if (!patchRes.ok) throw new Error(patched?.message || `Error attach diseñador images: ${patchRes.status}`);

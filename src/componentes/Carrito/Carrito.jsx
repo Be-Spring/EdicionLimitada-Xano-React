@@ -13,6 +13,7 @@ export default function Carrito() {
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [success, setSuccess] = useState(null)
 
   async function handleConfirmPayment() {
     setError(null)
@@ -40,10 +41,10 @@ export default function Carrito() {
         estado: 'pendiente', // como definiste en la tabla
       })
 
-      // 4) Vaciar carrito y mostrar mensaje
+      // 4) Vaciar carrito y mostrar mensaje (usar modal en-app en lugar de alert)
       clearCart()
-      alert(`Pago aceptado (simulado). Orden creada #${orden?.id ?? ''}`)
       closeCart()
+      setSuccess({ message: `Pago aceptado (simulado). Orden creada #${orden?.id ?? ''}`, orden })
     } catch (e) {
       console.error('Error creando orden', e)
       setError(e?.message || 'No se pudo registrar el pago.')
@@ -158,6 +159,18 @@ export default function Carrito() {
           </button>
         </div>
       </aside>
+      {/* Modal de éxito (pago simulado) */}
+      {success && (
+        <div className="modal-backdrop" onClick={() => setSuccess(null)} style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.4)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:1050}}>
+          <div className="card p-3" onClick={e => e.stopPropagation()} style={{width:420}}>
+            <h5 className="mb-2">Pago aceptado</h5>
+            <p>{success.message}</p>
+            <div className="d-flex justify-content-end" style={{gap:8}}>
+              <button className="btn btn-primary" onClick={() => setSuccess(null)}>Aceptar</button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   )
 }

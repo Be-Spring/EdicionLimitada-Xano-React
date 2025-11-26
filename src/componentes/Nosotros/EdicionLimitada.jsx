@@ -1,5 +1,6 @@
 import React from 'react';
 import './EdicionLimitada.css';
+import logo from '../../assets/img/Logo Edicion Limitada.png';
 
 const EdicionLimitada = () => {
     return (
@@ -37,7 +38,9 @@ const EdicionLimitada = () => {
                     </div>
 
                     <div className="col-lg-5 text-center">
-                        {/* Image / visual block can be added here later (logo/gallery) */}
+                        <div className="big-logo">
+                            <img src={logo} alt="Logo Edición Limitada" style={{maxWidth: '100%', height: 'auto'}} />
+                        </div>
                     </div>
 
                 </div>

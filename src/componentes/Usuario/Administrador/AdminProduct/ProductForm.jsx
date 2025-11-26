@@ -43,7 +43,15 @@ export default function ProductForm({ initial = null, onSave = () => {}, onCance
         return it
       }).filter(Boolean)
       setExistingImages(normalized)
-    }
+      } else {
+        // reset form when no initial provided (new product)
+        setForm({ nombre_producto: '', valor_producto: 0, stock: 0, categoria: '', disenador: '' })
+        setFiles([])
+        setExistingImages([])
+        setRemovedImages(new Set())
+        setStatus('')
+        setLoading(false)
+      }
   }, [initial])
 
   useEffect(() => {
@@ -108,7 +116,12 @@ export default function ProductForm({ initial = null, onSave = () => {}, onCance
     const payload = { ...form, images: files, keepImages: kept }
     try {
       await onSave(payload)
-      setStatus('Guardado correctamente')
+        setStatus('Guardado correctamente')
+        // clear form after successful save (create or update)
+        setForm({ nombre_producto: '', valor_producto: 0, stock: 0, categoria: '', disenador: '' })
+        setFiles([])
+        setExistingImages([])
+        setRemovedImages(new Set())
     } catch (err) {
       console.error('ProductForm save error', err)
       setStatus(err?.message || 'Error al guardar')
@@ -116,6 +129,17 @@ export default function ProductForm({ initial = null, onSave = () => {}, onCance
       setLoading(false)
     }
   }
+
+    const handleCancel = () => {
+      // reset local state and inform parent
+      setForm({ nombre_producto: '', valor_producto: 0, stock: 0, categoria: '', disenador: '' })
+      setFiles([])
+      setExistingImages([])
+      setRemovedImages(new Set())
+      setStatus('')
+      setLoading(false)
+      onCancel()
+    }
 
   return (
     <div className="admin-product-form card p-3">
@@ -186,7 +210,7 @@ export default function ProductForm({ initial = null, onSave = () => {}, onCance
 
         <div className="form-actions">
           <button type="submit" className="btn-primary" disabled={loading}>{loading ? 'Guardando...' : 'Guardar'}</button>
-          <button type="button" className="btn-secondary" onClick={onCancel} disabled={loading}>Cancelar</button>
+           <button type="button" className="btn-secondary" onClick={handleCancel} disabled={loading}>Cancelar</button>
         </div>
       </form>
 

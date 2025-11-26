@@ -14,14 +14,16 @@ export default function Carrito() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState(null)
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false)
 
   async function handleConfirmPayment() {
     setError(null)
 
     // 1) Si NO hay sesión → cerrar carrito y llevar a login
     if (!user || !token) {
+      // cerrar carrito y solicitar al usuario que inicie sesión mediante modal
       closeCart()
-      navigate('/sesion')
+      setShowLoginPrompt(true)
       return
     }
 
@@ -167,6 +169,20 @@ export default function Carrito() {
             <p>{success.message}</p>
             <div className="d-flex justify-content-end" style={{gap:8}}>
               <button className="btn btn-primary" onClick={() => setSuccess(null)}>Aceptar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal: pedir iniciar sesión si intenta comprar sin estar logueado */}
+      {showLoginPrompt && (
+        <div className="modal-backdrop" onClick={() => setShowLoginPrompt(false)} style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.4)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:1050}}>
+          <div className="card p-3" onClick={e => e.stopPropagation()} style={{width:420,backgroundColor:'#222',color:'#f7f7f7',borderRadius:8}}>
+            <h5 className="mb-2">No has iniciado sesión</h5>
+            <p style={{color:'#e9e9ea'}}>Para completar la compra debes iniciar sesión. ¿Deseas ir al formulario de inicio de sesión del cliente?</p>
+            <div className="d-flex justify-content-end" style={{gap:8}}>
+              <button className="btn btn-light" onClick={() => setShowLoginPrompt(false)}>Cancelar</button>
+              <button className="btn btn-primary" onClick={() => { setShowLoginPrompt(false); navigate('/sesion') }}>Ir a iniciar sesión</button>
             </div>
           </div>
         </div>

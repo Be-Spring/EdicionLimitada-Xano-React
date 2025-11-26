@@ -3,11 +3,10 @@ import { useAuth } from '../../../../context/AuthContext.jsx'
 import './ProductForm.css'
 
 // ProductForm: UI-only component matching product table fields
-// Fields (based on your DB): images, nombre_producto, disenador, valor_producto, stock, categoria, descripcion
+// Fields (based on your DB): images, nombre_producto, disenador, valor_producto, stock, categoria
 export default function ProductForm({ initial = null, onSave = () => {}, onCancel = () => {} }) {
   const [form, setForm] = useState({
     nombre_producto: initial?.nombre_producto || '',
-    descripcion: initial?.descripcion || '',
     valor_producto: initial?.valor_producto || 0,
     stock: initial?.stock || 0,
     categoria: initial?.categoria || '',
@@ -26,7 +25,6 @@ export default function ProductForm({ initial = null, onSave = () => {}, onCance
     if (initial) {
       setForm({
         nombre_producto: initial.nombre_producto || '',
-        descripcion: initial.descripcion || '',
         valor_producto: initial.valor_producto || 0,
         stock: initial.stock || 0,
         categoria: (initial.categoria && (initial.categoria.id ?? initial.categoria)) || initial.categoria || '',
@@ -126,11 +124,6 @@ export default function ProductForm({ initial = null, onSave = () => {}, onCance
         <label className="form-group">
           <span>Nombre</span>
           <input name="nombre_producto" value={form.nombre_producto} onChange={onChange} required />
-        </label>
-
-        <label className="form-group">
-          <span>Descripción</span>
-          <textarea name="descripcion" value={form.descripcion} onChange={onChange} rows={4} />
         </label>
 
         <div className="row two-cols">

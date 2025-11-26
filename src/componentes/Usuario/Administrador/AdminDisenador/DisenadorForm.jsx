@@ -26,6 +26,7 @@ export default function DisenadorForm({ initial = null, onSave = () => {}, onCan
       setExistingImages(normalized)
     } else {
       setNombre('')
+      setDescripcion('')
       setExistingImages([])
     }
     setRemovedImages(new Set())

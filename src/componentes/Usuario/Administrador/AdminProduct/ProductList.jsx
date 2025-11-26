@@ -11,6 +11,8 @@ export default function ProductList({ onEdit = () => {}, onDelete = () => {}, re
   const [categoryMap, setCategoryMap] = useState({})
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(12)
+  const [confirmProduct, setConfirmProduct] = useState(null)
+  const [deletingProduct, setDeletingProduct] = useState(false)
   const [filterCategory, setFilterCategory] = useState('')
   const [filterDesigner, setFilterDesigner] = useState('')
 
@@ -150,7 +152,7 @@ export default function ProductList({ onEdit = () => {}, onDelete = () => {}, re
                 <td>{category}</td>
                 <td>
                   <button className="btn btn-sm btn-outline-primary me-2" onClick={() => onEdit(raw)}>Editar</button>
-                  <button className="btn btn-sm btn-outline-danger" onClick={() => onDelete(raw)}>Eliminar</button>
+                  <button className="btn btn-sm btn-outline-danger" onClick={() => setConfirmProduct(raw)}>Eliminar</button>
                 </td>
               </tr>
             )
@@ -169,6 +171,31 @@ export default function ProductList({ onEdit = () => {}, onDelete = () => {}, re
           <button className="btn btn-sm btn-outline-secondary" disabled={currentPage>=totalPages} onClick={() => setCurrentPage(p => Math.min(totalPages, p+1))}>Siguiente</button>
         </div>
       </div>
+      {/* Confirmation modal for deleting a product */}
+      {confirmProduct && (
+        <div className="modal-backdrop" onClick={() => { if (!deletingProduct) setConfirmProduct(null) }} style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.4)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:1050}}>
+          <div className="card p-3" onClick={e => e.stopPropagation()} style={{width:480,backgroundColor:'#222',color:'#f7f7f7',borderRadius:8,boxShadow:'0 6px 18px rgba(0,0,0,0.4)'}}>
+            <h5 className="mb-2">Confirmar eliminación</h5>
+            <p style={{color:'#e9e9ea'}}>¿Desea eliminar el producto <strong style={{color:'#fff'}}>{confirmProduct.nombre_producto || confirmProduct.name || ''}</strong>?</p>
+            <div className="d-flex justify-content-end" style={{gap:8}}>
+              <button className="btn btn-light" onClick={() => setConfirmProduct(null)} disabled={deletingProduct}>Cancelar</button>
+              <button className="btn btn-danger" onClick={async () => {
+                if (!confirmProduct?.id) return setConfirmProduct(null)
+                setDeletingProduct(true)
+                try {
+                  await onDelete(confirmProduct)
+                  setConfirmProduct(null)
+                } catch (err) {
+                  console.error('deleteProduct failed', err)
+                  alert('No se pudo eliminar producto')
+                } finally {
+                  setDeletingProduct(false)
+                }
+              }} disabled={deletingProduct}>{deletingProduct ? 'Eliminando...' : 'Eliminar'}</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

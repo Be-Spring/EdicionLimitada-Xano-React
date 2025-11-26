@@ -8,6 +8,8 @@ export default function DisenadoresList({ onEdit = () => {}, onDelete = () => {}
   const { token } = useAuth()
   const [designers, setDesigners] = useState([])
   const [loading, setLoading] = useState(false)
+  const [confirmDesigner, setConfirmDesigner] = useState(null)
+  const [deleting, setDeleting] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(12)
 
@@ -44,7 +46,7 @@ export default function DisenadoresList({ onEdit = () => {}, onDelete = () => {}
           const avatar = (typeof first === 'string' ? first : (first?.url || first?.path)) || '/src/assets/img/img_placeholder.png'
           const designerObj = { ...raw, avatar }
           return (
-            <DisenadorCard key={d.id} designer={designerObj} onEdit={() => onEdit(raw)} onDelete={() => { if (!confirm('Eliminar diseñador?')) return; deleteDesigner(token, raw.id).then(()=>onDelete(raw)).catch(e=>{console.error(e); alert(e.message||'Error')}) }} />
+            <DisenadorCard key={d.id} designer={designerObj} onEdit={() => onEdit(raw)} onDelete={() => setConfirmDesigner(raw)} />
           )
         })}
       </div>
@@ -61,6 +63,33 @@ export default function DisenadoresList({ onEdit = () => {}, onDelete = () => {}
           <button className="btn btn-sm btn-outline-secondary" disabled={currentPage>=totalPages} onClick={() => setCurrentPage(p => Math.min(totalPages, p+1))}>Siguiente</button>
         </div>
       </div>
+
+      {/* Confirmation modal for deleting a designer */}
+      {confirmDesigner && (
+        <div className="modal-backdrop" onClick={() => { if (!deleting) setConfirmDesigner(null) }} style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.4)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:1050}}>
+          <div className="card p-3" onClick={e => e.stopPropagation()} style={{width:420,backgroundColor:'#222',color:'#f7f7f7',borderRadius:8,boxShadow:'0 6px 18px rgba(0,0,0,0.4)'}}>
+              <h5 className="mb-2">Confirmar eliminación</h5>
+              <p style={{color:'#e9e9ea'}}>¿Desea eliminar al diseñador <strong style={{color:'#fff'}}>{confirmDesigner.nombre_disenador || confirmDesigner.name || ''}</strong>?</p>
+              <div className="d-flex justify-content-end" style={{gap:8}}>
+                <button className="btn btn-light" onClick={() => setConfirmDesigner(null)} disabled={deleting}>Cancelar</button>
+                <button className="btn btn-danger" onClick={async () => {
+                if (!confirmDesigner?.id) return setConfirmDesigner(null)
+                setDeleting(true)
+                try {
+                  await deleteDesigner(token, confirmDesigner.id)
+                  setConfirmDesigner(null)
+                  onDelete(confirmDesigner)
+                } catch (err) {
+                  console.error('deleteDesigner failed', err)
+                  alert(err?.message || 'Error eliminando diseñador')
+                } finally {
+                  setDeleting(false)
+                }
+                }} disabled={deleting}>{deleting ? 'Eliminando...' : 'Eliminar'}</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
